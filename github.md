@@ -16,7 +16,7 @@ In the GitHub Desktop client make a local clone of the repository by going to `F
 
 ### Branch
 
-We never commit directly to the master branch so first we need to make a new branch. Go to `Branch → New Branch` in the menu. Enter a short descriptive name of the changes you want to make (for example: `firewall`).
+Ensure you are on the master branch of your fork and click on `Fetch origin`. This will pull in all the latest changes to your local clone of the repository. Afterwards you should create a new branch so that the master branch can always pull in the lastest changes in the future. Go to `Branch → New Branch` in the menu. Enter a short descriptive name of the changes you want to make (for example: `firewall`).
 
 ### Editor
 
@@ -28,7 +28,7 @@ Make the changes that you want to make and save the files.
 
 Back in the GitHub Desktop client you will see an overview of the changes that you made. Make sure the branch you created earlier is selected.
 
-Now we can commit these changes to the branch. Enter a summary of the changes (for example: `Add new address to firewall`) and click on `Commit to branchname`.
+You can now commit these changes to the branch. Enter a summary of the changes (for example: `Add new address to firewall`) and click on `Commit to branchname`.
 
 ### Pull request
 

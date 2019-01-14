@@ -13,7 +13,7 @@ This is a subset of our playbook conventions which are relevant for our customer
 
 ### Variables
 
-- Use an unique `uid` when adding a new user
+- Use a unique `uid` when adding a new user
 - Add `removed: true` when removing users and databases
 
 ### Tasks
