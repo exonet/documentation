@@ -1,8 +1,10 @@
-# Certificates
-Let's Encrypt certificates are managed with `certbot` with the `root` user. After a successful certificate request, certbot will prompt the location of the combined .pem file. The combined .pem file contains the private key, certificate and intermediate (chain) certificates.
+# Certbot
 
-## Playbook
-Use the .pem file location in a playbook (users.yml) to enable a certificate (HTTPS):
+Let's Encrypt certificates are managed with `certbot` as the `root` user. After a successful certificate request, certbot will show the location of the combined .pem file. The combined .pem file contains the private key, certificate and intermediate (chain) certificates.
+
+### Playbook
+
+Use the .pem file location in a playbook (users.yml) to enable a certificate (HTTPS).
 
 ```
 - name: example.com
@@ -10,10 +12,12 @@ Use the .pem file location in a playbook (users.yml) to enable a certificate (HT
   ssl: /etc/letsencrypt/combined/example_com.pem
 ```
 
-## DNS
+### DNS
+
 To obtain or renew a certificate, the A and AAAA records for a given domain must point to the IP address of the server.
 
-## Examples
+### Examples
+
 **Show current certificates**
 ```
 certbot certificates
