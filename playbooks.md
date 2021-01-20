@@ -59,3 +59,6 @@ crons:
         job: /usr/bin/python /home/alice/bin/script.py
         removed: true
 ```
+
+## Firewall
+The `vars/firewall.yml` file is used to manage firewall rules.
