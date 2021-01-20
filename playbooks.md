@@ -2,10 +2,8 @@
 
 Playbooks use vars files to manage things like users, virtualhosts, databases, cronjobs, firewall rules etc. on a server. The vars files are located in the `vars` directory. This document covers information and examples for the availabe features (variables).
 
-### crons.yml
+## Cronjobs
 The `crons.yml` file is used to manage users cronjobs.
-
-**Examples:**
 
 User with two cronjobs.
 ```
@@ -42,4 +40,19 @@ crons:
         job: /usr/bin/python /home/alice/bin/script.py
         env:
           - "APP_ENV=production"
+```
+Disabled and removed cronjobs. If a cronjob is disabled, it will be commented in crontab.
+```
+crons:
+  - name: alice
+    tasks:
+      - name: run script.py every minute
+        job: python3 /home/alice/bin/script.py
+        disabled: true
+
+  - name: bob
+    tasks:
+      - name: run script.py every minute
+        job: /usr/bin/python /home/alice/bin/script.py
+        removed: true
 ```
