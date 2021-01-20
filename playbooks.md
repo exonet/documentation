@@ -1,6 +1,6 @@
 # Playbook variables
 
-Playbooks use vars files to manage things like users, virtualhosts, databases, cronjobs, firewall rules etc. on a server. The vars files are located in the `vars` directory. This document covers information and examples for the availabe features (variables).
+Playbooks use vars files to manage things like users, virtualhosts, databases, cronjobs, firewall rules etc. on a server. The vars files are located in the `vars` directory. This document contains information and examples about the availabe features (variables).
 
 ## Cronjobs
 The `crons.yml` file is used to manage users cronjobs.
