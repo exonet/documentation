@@ -56,7 +56,7 @@ crons:
   - name: bob
     tasks:
       - name: run script.py every minute
-        job: /usr/bin/python /home/alice/bin/script.py
+        job: /usr/bin/python /home/bob/bin/script.py
         removed: true
 ```
 
