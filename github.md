@@ -18,26 +18,26 @@ Now the files in the repository are available on your local filesystem.
 
 ### Branch
 
-Ensure you are on the master branch of your fork and click on `Fetch origin`. This will pull in all our latest changes to your local clone of the repository. Afterwards you should create a new branch so that the master branch can always pull in the lastest changes in the future. Go to `Branch → New Branch` in the menu. Enter a short descriptive name of the changes you want to make (for example: `firewall`).
+Make sure you have the master branch selected as your current branch. Whenever you want to make a change you should always create a new branch. This branch will be based on the master banch of the original repository (not on the master branch of your fork) so that it will always have all the latest changes once you create it. Go to `Branch → New Branch` in the menu. Enter a short descriptive name of the changes you want to make (for example: `firewall`).
 
 ### Editor
 
-Open the files on your local filesystem in your favorite editor. Make sure this editor has support for [EditorConfig](https://editorconfig.org/) and enable the EditorConfig plugin if needed. This plugin will automatically fix common style mistakes like indentation.
+Open the files on your local filesystem in your favorite editor. Make sure this editor has support for [EditorConfig](https://editorconfig.org/) and enable the EditorConfig plugin if needed. This plugin will automatically fix common style mistakes like indentation based on a configuration file that is part of the repository.
 
 Now you can make the changes that are needed and save the files afterwards.
 
 ### Commit
 
-Back in the GitHub Desktop client you will now see an overview of the changes that you made. Make sure the branch you created earlier is still selected.
+Back in the GitHub Desktop client you will now see an overview of the changes that you made. Make sure the branch you created earlier is still selected as your current branch.
 
 You can now commit these changes to the branch you created. Enter a summary of the changes (for example: `Add new address to firewall`) and click on `Commit to branchname`.
 
 ### Pull request
 
-Now we are able to publish this branch and create a Pull Request with these changes. Click on `Publish branch` in the GitHub Desktop client. Next go to `Branch → Create Pull Request` in the menu.
+Now we are able to publish this branch and create a pull request with these changes. Click on `Publish branch` in the GitHub Desktop client. Next go to `Branch → Create Pull Request` in the menu.
 
 This will open the pull request form on GitHub in your browser. Make sure the base fork contains exonet instead of your own GitHub username and optionally enter a comment. Then click on `Create pull request`.
 
 ### Approval
 
-That's it! You've now made your first Pull Request. Our engineers will now review your changes and deploy them on the server after our approval (we use a comment with a :rocket: to start the deployment) or we will request that you make changes if something is not according to our standards.
+That's it! You've now made your first pull request. Our engineers will now review your changes and deploy them on the server after our approval (we use a comment with a :rocket: to start the deployment) or we will request that you make changes if something is not according to our standards.
