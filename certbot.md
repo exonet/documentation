@@ -32,7 +32,7 @@ certbot certonly --expand -d example.com,www.example.com,sub1.example.com
 ```
 **Force renew a certificate**
 ```
-certbot certonly --force-renewal -d example.com
+certbot certonly --force-renewal --cert-name example.com
 ```
 **Delete a certificate**
 ```
