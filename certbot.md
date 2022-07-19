@@ -24,15 +24,15 @@ certbot certificates
 ```
 **Request a certificate**
 ```
-certbot certonly -d example.com,www.example.com
+certbot certonly --authenticator webroot -d example.com,www.example.com
 ```
 **Expand existing certificate**
 ```
-certbot certonly --expand -d example.com,www.example.com,sub1.example.com
+certbot certonly --authenticator webroot --expand -d example.com,www.example.com,sub1.example.com
 ```
 **Force renew a certificate**
 ```
-certbot certonly --force-renewal --cert-name example.com
+certbot certonly --authenticator webroot --force-renewal --cert-name example.com
 ```
 **Delete a certificate**
 ```
