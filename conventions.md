@@ -25,6 +25,6 @@ This is a subset of our playbook conventions which are relevant for our customer
 
 ### Templates
 
-- Template syntax must be compatible with Jinja 2.10 and higher
+- Template syntax must be compatible with Jinja 3.1 and higher
 - Templates should have the extension `.j2`
 - Templates should have `{{ ansible_managed }}` at the top of the file
