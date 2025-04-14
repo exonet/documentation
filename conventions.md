@@ -18,7 +18,7 @@ This is a subset of our playbook conventions which are relevant for our customer
 
 ### Tasks
 
-- Ansible syntax must be compatible with Ansible 2.8 and higher
+- Ansible syntax must be compatible with Ansible 10 and higher
 - A `when` should always be last and a `become` should always be first
 - Software roles should always have a fixed version (or major version) as variable
 - Reload the service with a `notify` when changing configuration
