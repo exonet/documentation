@@ -1,0 +1,6 @@
+---
+base_dkim_domains:
+  - domain: example.com
+    selector: foo
+  - domain: whatever.io
+    selector: bar
