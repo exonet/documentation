@@ -1,0 +1,10 @@
+---
+redis_databases:
+  - name: example-db
+    port: 6000
+    memory: 64
+    policy: cache
+  - name: worker-db
+    port: 6001
+    memory: 64
+    policy: persistent # default
