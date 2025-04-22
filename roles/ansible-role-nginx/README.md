@@ -76,6 +76,7 @@ This role will install and configure Nginx.
 | nginx_ssl_prefer_server_ciphers                   | false                                      | The nginx ssl_prefer_server_ciphers.                                                                                                                            |
 | nginx_rate_limit                                  |                                            | The nginx rate limit.                                                                                                                                           |
 | nginx_user_logs                                   | false                                      | The nginx logs in users home dir.                                                                                                                               |
+| nginx_shared_home                                 | false                                      | Option if nginx_user_logs is set to true and the users are shared. This ensures user logs tasks are only run on one host.                                                                                                                               |
 | nginx_buffer_logs                                 | true                                       | Buffer the writing to the log files.                                                                                                                            |
 | nginx_map_hash_bucket_size                        | 64                                         | The value for map_hash_bucket_size.                                                                                                                             |
 | nginx_default_headers                             | false                                      | The nginx default headers used for the default vhost.                                                                                                           |
@@ -127,6 +128,7 @@ This role will install and configure Nginx.
 | nginx_gzip_proxied                                | any                                        | Enables or disables gzipping of responses for proxied requests depending on the request and response.                                                           |
 | nginx_gzip_types_extra                            |                                            | Additional content types to gzip.                                                                                                                               |
 | nginx_auth_basic_message                          | "Authentication required"                  | Set auth basic message.                                                                                                                                         |
+| nginx_monitoring_allowed_addresses_extra          | []                                         | Gives the defined addresses access to the `/monitoring` location in the default vhost.                                                                          |
 
 ## Passenger Enterprise support
 
