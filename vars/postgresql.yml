@@ -1,0 +1,9 @@
+---
+postgresql_databases:
+  - name: db1
+    owner: user1
+
+postgresql_users:
+  - name: user1
+    databases:
+      - name: db1
