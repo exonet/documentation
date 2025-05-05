@@ -10,8 +10,8 @@ Latest supported versions:
 
 | Version |
 | ------- |
-| 8.4.4   |
-| 8.0.41  |
+| 8.4.5   |
+| 8.0.42  |
 | 5.7.44  |
 | 5.6.51  |
 
@@ -119,7 +119,7 @@ Instead of modifying them, the role should be updated as needed.
         name: ansible-role-mysqld
       vars:
         mysqld_role_mode: all
-        mysqld_version: "8.4.4"
+        mysqld_version: "8.4.5"
         mysqld_data_path: "/var/lib/mysql"
         mysqld_options_extra:
           group_concat_max_len: 32000
@@ -137,7 +137,7 @@ When using multi-instance it is still possible to have a single-instance entry. 
         name: ansible-role-mysqld
       vars:
         mysqld_role_mode: all
-        mysqld_version: "8.4.4"
+        mysqld_version: "8.4.5"
         mysqld_data_path: "/var/lib/mysql"
         mysqld_options_extra:
           group_concat_max_len: 32000
@@ -149,12 +149,12 @@ When using multi-instance it is still possible to have a single-instance entry. 
         name: ansible-role-mysqld
       vars:
         mysqld_role_mode: all
-        mysqld_version: "8.4.4"
+        mysqld_version: "8.4.5"
     - include_role:
         name: ansible-role-mysqld
       vars:
         mysqld_role_mode: all
-        mysqld_version: "8.0.41"
+        mysqld_version: "8.0.42"
         mysqld_instance: instance01
         mysqld_port: 3309
     - include_role:
