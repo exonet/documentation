@@ -67,9 +67,9 @@ can't be set to "undefined", the variables that should be "undefined" are listed
 | newrelic   | >=11.5    | >=10.15   | >=10.7    | Yes       | Yes       | Yes       |
 | oauth      | Yes       | Yes       | Yes       | Yes       | >=2.0.7   | Yes       |
 | oci8       | Yes       | Yes       | >=3.3.0   | >=3.2.0   | >=3.0.0   | >=2.2.0   |
-| pdflib     | No        | >=10.0.2  | >=10.0.1  | Yes       | >=9.3.0p5 | Yes       |
+| pdflib     | >=10.0.3  | Yes       | Yes       | Yes       | >=9.3.0p5 | Yes       |
 | pdo_sqlsrv | No        | Yes       | >=5.11.0  | Yes       | Yes       | <5.11     |
-| phalcon    | No        | Yes       | >=5.2.0   | Yes       | Yes       | Yes       |
+| phalcon    | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
 | protobuf   | Yes       | Yes       | Yes       | Yes       | Yes       | >=3.21.12 |
 | psr        | No        | No        | No        | >=1.2.0   | >=1.0.0   | Yes       |
 | raphf      | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
