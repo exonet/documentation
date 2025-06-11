@@ -10,11 +10,11 @@ The following versions are supported by this role.
 
 | Main  | Latest | EOL |
 | ----- | ------ | --- |
-| 17    | 17.4   | No  |
-| 16    | 16.8   | No  |
-| 15    | 15.12  | No  |
-| 14    | 14.17  | No  |
-| 13    | 13.20  | No  |
+| 17    | 17.5   | No  |
+| 16    | 16.9   | No  |
+| 15    | 15.13  | No  |
+| 14    | 14.18  | No  |
+| 13    | 13.21  | No  |
 | 12    | 12.22  | Yes |
 | 11    | 11.21  | Yes |
 | 10    | 10.21  | Yes |
