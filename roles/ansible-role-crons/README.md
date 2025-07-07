@@ -37,6 +37,7 @@ The following optional variables can be passed to the role from the playbook.
             month: 1
             weekday: 1
             job: "/usr/local/bin/php /tmp/example.php"
+            disabled: true
             random_delay: true
             log: true
             log_file: /var/log/example_cron.log
