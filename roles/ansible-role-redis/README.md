@@ -18,6 +18,7 @@ The following additional variables can be passed to the role from the playbook.
 | `redis_timeout`              | `string`  | `120`               | No       | Configure the Redis timeout. This timeout can be defined for all instances globally as well as per separate instance.               |
 | `redis_type`                 | `string`  | `server`            | No       | Whether to install the server or only the client utilities.                                                                         |
 | `redis_service_dependencies` | `list`    | `[]`                | No       | A list of other services to start before starting Redis.                                                                            |
+| `redis_loglevel`             | `string`  | `notice`            | No       | The loglevel used. This can be set to: debug, verbose, notice or warning.                                                           |
 | `redis_logfile`              | `string`  | `""`                | No       | The path for Redis to log to, normally not defined.                                                                                 |
 | `redis_pidfile`              | `string`  | `/var/run/redis.pid`| No       | The path to the Redis PID file.                                                                                                     |
 | `redis_dir`                  | `string`  | `/var/lib/redis`    | No       | Location of the Redis database directory.                                                                                           |
@@ -40,6 +41,8 @@ The following additional variables can be passed to the role from the playbook.
         save: false
         timeout: "3600"
         keepalive: "600"
+        logfile: "/var/log/redis/my_custom.log"
+        loglevel: verbose
       - name: worker-db
         policy: persistent # default
         port: 6001

@@ -22,8 +22,8 @@ Ansible [mysql_user module](https://docs.ansible.com/ansible/latest/collections/
 
 The following variables are most likely used in the playbook:
 
-| Variable                               | Default                  | Description                                                                                                             |
-|----------------------------------------|--------------------------|-------------------------------------------------------------------------------------------------------------------------|
+| Variable                               | Default                  | Description                                                                                                             | Extra
+|----------------------------------------|--------------------------|-------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------
 | `mysqld_role_mode`                     | `install`                | Whether to run install, config or all tasks.                                                                            |
 | `mysqld_bind_address`                  | `127.0.0.1`              | Define which IP address to bind MySQL on                                                                                |
 | `mysqld_version`                       |                          | The version of MySQL to install.                                                                                        |
@@ -34,6 +34,7 @@ The following variables are most likely used in the playbook:
 | `mysqld_instance`                      |                          | Instance name. When provided, the role will install a separate instance of MySQL. Paths will append the instance name.  |
 | `mysqld_port`                          |                          | Port number on which the  instance will listen.                                                                         |
 | `mysqld_manage_passwords`              | `false`                  | Update MySQL user password when the password in the `/root/.mysql/.my.user.cnf` file is changed                         |
+| `mysqld_manage_passwords_slave`        | `false`                  | Update MySQL user password when the password in the `/root/.mysql/.my.user.cnf` file is changed when MySQL is slave.    | Note! Normally the master takes care of the users so only use this in special cases where the slave needs to manage the users.
 | `mysqld_i_love_defaults`               | `false`                  | Override the defaults check.                                                                                            |
 | `mysqld_options_extra`                 | `{}`                     | Provide extra configuration options.                                                                                    |
 | `mysqld_connect_timeout`               | `10`                     | Set connect timeout                                                                                                     |
