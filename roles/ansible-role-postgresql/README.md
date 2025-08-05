@@ -47,9 +47,11 @@ Role variables
 | `postgresql_pgbackrest`                  | `false`                                                                 | Whether to install and configure the pgBackRest utility.            |
 | `postgresql_pgtop`                       | `false`                                                                 | Whether to install the pgtop utility                                |
 | `postgresql_postgis`                     | `false`                                                                 | Whether to install and configure Postgis.                           |
+| `postgresql_pg_repack`                   | `false`                                                                 | Whether to install the pg_repack plugin                             |
 | `postgresql_service_dependencies`        | `[]`                                                                    | A list of other services to start before starting PostgreSQL.       |
 | `postgresql_shared_buffers`              | `128M`                                                                  | Configure the shared buffer size.                                   |
 | `postgresql_wal_keep_size`               | `128`                                                                   | Configure the wal_keep_size.                                        |
+| `postgresql_wal_level`                   | `replica`                                                               | Configure the WAL level. (replica, minimal, logical)                |
 | `postgresql_max_slot_wal_keep_size`      | `-1`                                                                    | Configure the replication slot wal_keep_size.                       |
 | `postgresql_wal_keep_segments`           | `16`                                                                    | Configure the wal_keep_settings.                                    |
 | `postgresql_work_mem`                    | `4M`                                                                    | Configure the work_mem size.                                        |
@@ -80,6 +82,31 @@ Pgbackrest secrets
 ------------------
 Pgbackrest secrets should be set manually in /etc/pgbackrest/conf.d/ directory.
 You can define [directives] in these that already exists in the global config to set a secret.
+```bash
+[global]
+repo1-s3-key=$access-key
+repo1-s3-key-secret=$secret-key
+repo1-cipher-pass=$long-passphrase
+```
+
+
+
+For example using Minio Object Storage with encrypted backups:
+
+```yml
+postgresql_pgbackrest_repos:
+  - name: repo1
+    retention_full: 2
+    type: s3
+    s3_bucket: 10000-bucketname
+    s3_endpoint: shared.s3.exonet.io
+    s3_region: us-east-1 # required for Minio
+    s3_uri_style: path # required for Minio, use `host` for AWS
+    encrypted: true
+    cipher_type: aes-256-cbc
+    path: /pgbackrest
+```
+
 
 Testing
 -------
