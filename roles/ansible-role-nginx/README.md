@@ -28,6 +28,11 @@ This role will install and configure Nginx.
 | nginx_fastcgi_cache_valid                       | ['200 1m']                               | Define the global cache valid configuration (only status 200 for 1 minute).                                                                                   |
 | nginx_fastcgi_hide_headers                      | []                                       | Define the global headers which FastCGI shouldn't pass on to a client.                                                                                        |
 | nginx_fastcgi_ignore_headers                    | []                                       | Define the global headers which caching should ignore.                                                                                                        |
+| nginx_geoip                                     | false                                    | Enable geoip blocking globally.                                                                                                                               |
+| nginx_geoip_database_path                       | `/usr/share/GeoIP/GeoIPv6.dat`           | Path of the GeoIP database file. Note: IPv6 contains both IPv4 and IPv6 addresses and should be used for servers with IPv6 enabled.                           |
+| nginx_geoip_return_status                       | 403                                      | The http return status code when an IP is blocked by GeoIP.                                                                                                   |
+| nginx_geoip_default                             | allow                                    | The default for GeoIP blocking. Allow means allow everything *except* what is in the list. Deny means deny everything *except* what is in the list.           |
+| nginx_geoip_countries                           | []                                       | List of countries to deny or allow depending on the `nginx_geoip_default` variable.                                                                           |
 | nginx_global_fastcgi_settings                   |                                          | Set nginx fastcgi settings globally.                                                                                                                          |
 | nginx_global_headers                            |                                          | Set nginx headers globally.                                                                                                                                   |
 | nginx_graylog_address                           | false                                    | The Graylog server for nginx logging.                                                                                                                         |
@@ -57,6 +62,7 @@ This role will install and configure Nginx.
 | nginx_modsecurity_audit_log_relevant_status     |                                          | Configures which response status code is to be considered relevant for the purpose of audit logging.                                                          |
 | nginx_modsecurity_bad_agents_allowed            | []                                       | Override `nginx_modsecurity_bad_agents_default` to allow agents that were on the blacklist.                                                                   |
 | nginx_modsecurity_bad_agents_extra              | []                                       | Add extra bad agents to the default list `nginx_modsecurity_bad_agents_default`.                                                                              |
+| nginx_modsecurity_block_missing_user_agent      | false                                    | Whether to block user agents that are empty or contain only blank spaces.                                                                                     |
 | nginx_modsecurity_crs_url                       |                                          | The download location of the ModSecurity Core Rule Set.                                                                                                       |
 | nginx_modsecurity_crs_version                   | 4.10.0                                   | The version of the ModSecurity Core Rule Set to install.                                                                                                      |
 | nginx_modsecurity_custom_rules                  | []                                       | Custom Secrules Modsecurity will use.                                                                                                                         |
@@ -127,10 +133,50 @@ This role will install and configure Nginx.
 | nginx_timeout                                   | 20s                                      | The nginx timeout settings (default: 20s).                                                                                                                    |
 | nginx_url                                       |                                          | The download location of the Nginx source.                                                                                                                    |
 | nginx_user_logs                                 | false                                    | The nginx logs in users home dir.                                                                                                                             |
-| nginx_version                                   | "1.28.0"                                   | The version of Nginx to install.                                                                                                                            |
+| nginx_version                                   | "1.28.0"                                 | The version of Nginx to install.                                                                                                                              |
 | nginx_version_major                             | "1.28"                                   | The major release of Nginx to install.                                                                                                                        |
 | nginx_worker_connections                        | 1024                                     | The nginx worker_connections (default: 1024).                                                                                                                 |
 
+
+## GeoIP blocking via `users.yml`
+Warning: if you enable GeoIP blocking globally it will be active for all domains! The `nginx_variables_hash_bucket_size` is automatically increased when GeoIP blocking is active. You may need to increase `nginx_variables_hash_bucket_size` even more with a lot of domains.
+
+You can enable it per domain or user. Look at the example below:
+```yml
+users:
+  - name: example
+    uid: 1500
+    php_max_children: "32"
+    composer_version: "2"
+    domains:
+      - name: example.nl
+      - name: admin.example.nl
+        geoip: true
+        geoip_default: "deny" # Set default to deny every country
+        geoip_countries:      # Except countries in this list, which will be allowed
+          - "NL"
+      - name: forum.example.nl
+        geoip: true
+        geoip_default: "allow" # Set default to allow every country
+        geoip_countries:       # Except countries in this list, which will be denied
+          - "NL"
+
+  - name: demo
+    uid: 1501
+    php_max_children: "32"
+    composer_version: "2"
+    geoip: true
+    geoip_default: "deny" # Deny all countries by default for all domains
+    geoip_countries:      # Allow only listed countries
+      - "NL"
+      - "DE"
+    domains:
+      - name: demo.org       # Inherits user-level GeoIP settings
+      - name: api.demo.org
+        geoip_default: "allow" # Overrides user-level default: allow all countries
+        geoip_countries:       # Overrides user-level countries, which will be denied
+          - "FR"
+```
 
 ## Passenger Enterprise support
 
