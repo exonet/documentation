@@ -148,6 +148,8 @@ opcache.revalidate_path = 1
             php_flags:
               - name: session.auto_start
                 value: off # yamllint disable-line rule:truthy
+        roles:
+          - web01.domain.tld # if the server is replaced, the config files has te be removed manually from the server.
 
   tasks:
     - name: php

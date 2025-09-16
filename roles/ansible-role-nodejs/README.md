@@ -32,7 +32,7 @@ Example playbook with two nodejs versions:
     nodejs_default_version: "18"
 
   tasks:
-    - name: ansible-role-nodejs
+    - name: nodejs
       block:
         - include_role:
             name: ansible-role-nodejs
