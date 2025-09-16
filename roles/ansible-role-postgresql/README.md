@@ -10,11 +10,11 @@ The following versions are supported by this role.
 
 | Main  | Latest | EOL |
 | ----- | ------ | --- |
-| 17    | 17.5   | No  |
-| 16    | 16.9   | No  |
-| 15    | 15.13  | No  |
-| 14    | 14.18  | No  |
-| 13    | 13.21  | No  |
+| 17    | 17.6   | No  |
+| 16    | 16.10  | No  |
+| 15    | 15.14  | No  |
+| 14    | 14.19  | No  |
+| 13    | 13.22  | Yes |
 | 12    | 12.22  | Yes |
 | 11    | 11.21  | Yes |
 | 10    | 10.21  | Yes |
@@ -30,7 +30,7 @@ Role variables
 | `postgresql_type`                        | `server`                                                                | The type of PostgreSQL to install (server or client).               |
 | `postgresql_listen_address`              | `localhost`                                                             | Define which IP address PostgreSQL should listen on.                |
 | `postgresql_listen_port`                 | `5432`                                                                  | Define which port PostgreSQL should listen on.                      |
-| `postgresql_version`                     | `17.3`                                                                  | The version of PostgreSQL to install.                               |
+| `postgresql_version`                     | `17.6`                                                                  | The version of PostgreSQL to install.                               |
 | `postgresql_allowed_hosts_extra`         | `[]`                                                                    | Specify which extra IPs or IP ranges to add to `pg_hba`             |
 | `postgresql_pg_hba_config_extra`         | `[]`                                                                    | Add extra custom config to `pg_hba`                                 |
 | `postgresql_logging_collector`           | `false`                                                                 | Wether to enable the logging collector.                             |
