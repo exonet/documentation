@@ -182,6 +182,56 @@ users:
           - "FR"
 ```
 
+## Custom upstream support
+Define the custom upstreams on the user level. Servers can be defined as sockets and addresses. The options for servers can be found in the [Nginx documentation](https://nginx.org/en/docs/http/ngx_http_upstream_module.html#server). An option witout a parameter such as `backup` can be defined as `backup: true`.
+
+The custom upstreams can be used via the `custom_upstream_proxy()` macro call. Specific proxy parameters are automatically applied if they are defined on the domain level. Since custom upstreams are probably used within different location blocks and we can't define location blocks in the domains list, an application template is used to implement the specific location blocks each location block calls the specific custom upstream.
+
+An example:
+```yml
+users:
+  - name: example
+    uid: 1500
+    nginx_upstreams:
+      - name: app_server
+        servers:
+          - socket: "unix:/var/socket/app_server.sock"
+            options:
+              fail_timeout: 0
+          - address: "127.0.0.1:8081"
+            options:
+              fail_timeout: 0
+              backup: true
+        keepalive: 20
+        balancing_method: "least_conn"
+      - name: legacy_app_server
+        servers:
+          - socket: "unix:/var/socket/webshop_legacy.sock"
+            options:
+              fail_timeout: 0
+    domains:
+      - name: customupstream.nl
+        application: custom_upstream
+        application_custom_php: true
+        proxy_hide_headers:
+          - "Test-Header"
+        aliases:
+          - www.customupstream.nl
+```
+
+The `custom_upstream` (name this to whatever you want) application template. You can call the `nginx_upstream_proxy` with the name of the upstream. See the example below:
+```
+{% from "templates/macros/upstream_proxy.j2" import nginx_upstream_proxy with context %}
+
+  location /legacy {
+{{ nginx_upstream_proxy('legacy_app_server') }}
+  }
+
+  location / {
+{{ nginx_upstream_proxy('app_server') }}
+  }
+```
+
 ## Passenger Enterprise support
 
 For Passenger Enterprise to work a download key and a license file are needed. The download key must be located in `/root/.passenger-enterprise-download-key` and the license file in `/root/.passenger-enterprise-license`. Without those files the role will fail with a message that those files are missing. The files can be downloaded from the Passenger Enterprise user portal.
