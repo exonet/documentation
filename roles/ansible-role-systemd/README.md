@@ -21,6 +21,7 @@ The `services` variable must always be present as it provides the information th
             pre_command: /bin/sleep 1
             command: /usr/bin/yes
             command_reload: /bin/kill -USR2 $MAINPID
+            command_stop: /bin/kill -TERM $MAINPID
             directory: /tmp
             env_vars:
               - name: APPLICATION_ENV

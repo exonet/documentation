@@ -3,8 +3,9 @@
 This role will install and configure Nginx.
 
 ## Role variables
+
 | Parameter                                       | Default                                  | Description                                                                                                                                                   |
-|-------------------------------------------------|------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ----------------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | nginx_access_log_format                         | combined                                 | The value for the access log format.                                                                                                                          |
 | nginx_access_log_format_definitions             | `[]`                                     | A list of custom logformats.                                                                                                                                  |
 | nginx_application_php                           | true                                     | Whether to add the PHP location block.                                                                                                                        |
@@ -22,6 +23,8 @@ This role will install and configure Nginx.
 | nginx_default_redirect                          |                                          | Redirect default vhost to this URL.                                                                                                                           |
 | nginx_default_server                            | true                                     | Add default server                                                                                                                                            |
 | nginx_default_ssl                               | false                                    | Redirect default vhost to https.                                                                                                                              |
+| nginx_default_fastcgi_settings                  | `{ fastcgi_buffer_size: "16k", fastcgi_buffers: "8 8k" }` | Default FastCGI buffer settings. Automatically merged with `nginx_global_fastcgi_settings` and any per-vhost `domain.fastcgi_settings`. Use `nginx_global_fastcgi_settings` to modify these.     |
+| nginx_default_proxy_settings                    | `{ proxy_buffer_size: "16k", proxy_buffers: "8 8k" }` | Default proxy buffer settings. Automatically merged with per-vhost `domain.proxy_settings` (or the legacy `domain.upstream_settings`). Use `nginx_global_proxy_settings` to modify these.          |
 | nginx_fastcgi_cache                             | false                                    | Enable fastcgi cache for all users.                                                                                                                           |
 | nginx_fastcgi_cache_base_dir                    | /var/cache/nginx                         | Define the base directory where all the cache files are stored.                                                                                               |
 | nginx_fastcgi_cache_inactive                    | 1m                                       | Define the global inactive (expire) time of the cache.                                                                                                        |
@@ -140,7 +143,6 @@ This role will install and configure Nginx.
 | nginx_version                                   | "1.28.0"                                 | The version of Nginx to install.                                                                                                                              |
 | nginx_version_major                             | "1.28"                                   | The major release of Nginx to install.                                                                                                                        |
 | nginx_worker_connections                        | 1024                                     | The nginx worker_connections (default: 1024).                                                                                                                 |
-
 
 ## GeoIP blocking via `users.yml`
 Warning: if you enable GeoIP blocking globally it will be active for all domains! The `nginx_variables_hash_bucket_size` is automatically increased when GeoIP blocking is active. You may need to increase `nginx_variables_hash_bucket_size` even more with a lot of domains.
