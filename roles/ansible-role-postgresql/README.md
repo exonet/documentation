@@ -46,6 +46,7 @@ Role variables
 | `postgresql_max_wal_senders`             | `3`                                                                     | Configure the max_wal_senders.                                      |
 | `postgresql_pgbackrest`                  | `false`                                                                 | Whether to install and configure the pgBackRest utility.            |
 | `postgresql_pgtop`                       | `false`                                                                 | Whether to install the pgtop utility                                |
+| `postgresql_pgvector`                    | `false`                                                                 | Whether to install the pgvector extension.                          |
 | `postgresql_postgis`                     | `false`                                                                 | Whether to install and configure Postgis.                           |
 | `postgresql_pg_repack`                   | `false`                                                                 | Whether to install the pg_repack plugin                             |
 | `postgresql_service_dependencies`        | `[]`                                                                    | A list of other services to start before starting PostgreSQL.       |
@@ -107,6 +108,19 @@ postgresql_pgbackrest_repos:
     path: /pgbackrest
 ```
 
+Pgvector
+------------------
+Enable the extension per database (run once in each DB that should use it):
+```sql
+CREATE EXTENSION vector;
+```
+
+Pgvector upgrades are a two-step process:
+1. Install the new pgvector version using this role.
+2. Manually update each database that uses the extension (run once per DB that uses pgvector):
+```sql
+ALTER EXTENSION vector UPDATE;
+```
 
 Testing
 -------
