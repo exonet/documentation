@@ -51,6 +51,7 @@ Role variables
 | `postgresql_pg_repack`                   | `false`                                                                 | Whether to install the pg_repack plugin                             |
 | `postgresql_service_dependencies`        | `[]`                                                                    | A list of other services to start before starting PostgreSQL.       |
 | `postgresql_shared_buffers`              | `128M`                                                                  | Configure the shared buffer size.                                   |
+| `postgresql_shared_preload_libraries`    | `[]`                                                                    | A list of shared preload libraries.                                 |
 | `postgresql_wal_keep_size`               | `128`                                                                   | Configure the wal_keep_size.                                        |
 | `postgresql_wal_level`                   | `replica`                                                               | Configure the WAL level. (replica, minimal, logical)                |
 | `postgresql_max_slot_wal_keep_size`      | `-1`                                                                    | Configure the replication slot wal_keep_size.                       |
@@ -97,7 +98,9 @@ For example using Minio Object Storage with encrypted backups:
 ```yml
 postgresql_pgbackrest_repos:
   - name: repo1
-    retention_full: 2
+    # example retention 6 week + last 7 days
+    retention_full: 6
+    retention_diff: 7 # if not set diff expires when the full which the diff depends on is expired, a full counts towards diff total
     type: s3
     s3_bucket: 10000-bucketname
     s3_endpoint: shared.s3.exonet.io
@@ -121,6 +124,13 @@ Pgvector upgrades are a two-step process:
 ```sql
 ALTER EXTENSION vector UPDATE;
 ```
+
+TimescaleDB
+-----------
+This extension will probably only run on the latest Postgresql version within the major version. For example, you need
+Postgresql 15.14 instead of 15.13.
+
+**Note**: Installing TimescaleDB requires adding it to shared_preload_libraries, which means PostgreSQL must be restarted for this change to take effect.
 
 Testing
 -------
