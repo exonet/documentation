@@ -43,45 +43,43 @@ can't be set to "undefined", the variables that should be "undefined" are listed
 
 ## Extensions Compatibility Matrix
 
-| Extension  | PHP 8.4   | PHP 8.3   | PHP 8.2   | PHP 8.1   | PHP 8.0   | PHP 7.4   |
-| ---------- | --------- | --------- | --------- | --------- | --------- | --------- |
-| amqp       | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
-| apcu       | >=5.1.24  | Yes       | Yes       | Yes       | Yes       | Yes       |
-| blackfire  | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
-| decimal    | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
-| event      | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
-| excimer    | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
-| gearman    | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
-| geoip      | No        | No        | No        | No        | No        | Yes       |
-| grpc       | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
-| igbinary   | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
-| imagick    | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
-| imap       | Yes       | No        | No        | No        | No        | No        |
-| ioncube    | No        | Yes       | Yes       | Yes       | Yes       | Yes       |
-| libsodium  | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
-| mailparse  | >=3.1.8   | Yes       | Yes       | Yes       | Yes       | Yes       |
-| memcache   | Yes       | Yes       | Yes       | Yes       | >=8.0     | <8.0      |
-| memcached  | Yes       | Yes       | Yes       | Yes       | >=3.1.4   | Yes       |
-| mongodb    | Yes       | Yes       | >=1.15.0  | Yes       | Yes       | Yes       |
-| msgpack    | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
-| newrelic   | >=11.5    | >=10.15   | >=10.7    | Yes       | Yes       | Yes       |
-| oauth      | Yes       | Yes       | Yes       | Yes       | >=2.0.7   | Yes       |
-| oci8       | Yes       | Yes       | >=3.3.0   | >=3.2.0   | >=3.0.0   | >=2.2.0   |
-| pdflib     | >=10.0.3  | Yes       | Yes       | Yes       | >=9.3.0p5 | Yes       |
-| pdo_sqlsrv | No        | Yes       | >=5.11.0  | Yes       | Yes       | <5.11     |
-| phalcon    | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
-| protobuf   | Yes       | Yes       | Yes       | Yes       | Yes       | >=3.21.12 |
-| psr        | No        | No        | No        | >=1.2.0   | >=1.0.0   | Yes       |
-| raphf      | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
-| redis      | Yes       | Yes       | Yes       | Yes       | >=5.3.0   | >=5.0.2   |
-| sqlsrv     | No        | Yes       | >=5.11.0  | >=5.10.0  | >=5.9.0   | Yes       |
-| ssh2       | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
-| swoole     | >=6.0.0   | Yes       | Yes       | Yes       | Yes       | Yes       |
-| uuid       | Yes       | Yes       | Yes       | Yes       | >=1.2.0   | Yes       |
-| xdebug     | >=3.4.0   | >=3.3.0   | >=3.2.0   | >=3.1.0   | >=3.0.0   | Yes       |
-| xlswriter  | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
-| yaml       | Yes       | Yes       | >=2.2.3   | >=2.2.2   | >=2.2.0   | Yes       |
-| zmq        | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
+| Extension  | PHP 8.5   | PHP 8.4   | PHP 8.3   | PHP 8.2   | PHP 8.1   | PHP 8.0   | PHP 7.4   |
+| ---------- | --------- | --------- | --------- | --------- | --------- | --------- | --------- |
+| amqp       | No        | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
+| apcu       | >=5.1.27  | >=5.1.24  | Yes       | Yes       | Yes       | Yes       | Yes       |
+| blackfire  | No        | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
+| decimal    | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
+| event      | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
+| excimer    | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
+| gearman    | No        | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
+| grpc       | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
+| igbinary   | No        | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
+| imagick    | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
+| imap       | Yes       | Yes       | No        | No        | No        | No        | No        |
+| ioncube    | No        | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
+| libsodium  | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
+| mailparse  | >=3.1.9   | >=3.1.8   | Yes       | Yes       | Yes       | Yes       | Yes       |
+| memcache   | No        | Yes       | Yes       | Yes       | Yes       | >=8.0     | <8.0      |
+| memcached  | >=3.4.0   | Yes       | Yes       | Yes       | Yes       | >=3.1.4   | Yes       |
+| mongodb    | >=2.1.2   | Yes       | Yes       | >=1.15.0  | Yes       | Yes       | Yes       |
+| msgpack    | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
+| newrelic   | No        | >=11.5    | >=10.15   | >=10.7    | Yes       | Yes       | Yes       |
+| oauth      | Yes       | Yes       | Yes       | Yes       | Yes       | >=2.0.7   | Yes       |
+| oci8       | Yes       | Yes       | Yes       | >=3.3.0   | >=3.2.0   | >=3.0.0   | >=2.2.0   |
+| pdflib     | No        | >=10.0.3  | Yes       | Yes       | Yes       | >=9.3.0p5 | Yes       |
+| pdo_sqlsrv | No        | No        | Yes       | >=5.11.0  | Yes       | Yes       | <5.11     |
+| phalcon    | No        | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
+| protobuf   | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       | >=3.21.12 |
+| raphf      | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
+| redis      | >=6.3.0   | Yes       | Yes       | Yes       | Yes       | >=5.3.0   | >=5.0.2   |
+| sqlsrv     | No        | No        | Yes       | >=5.11.0  | >=5.10.0  | >=5.9.0   | Yes       |
+| ssh2       | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
+| swoole     | No        | >=6.0.0   | Yes       | Yes       | Yes       | Yes       | Yes       |
+| uuid       | Yes       | Yes       | Yes       | Yes       | Yes       | >=1.2.0   | Yes       |
+| xdebug     | No        | >=3.4.0   | >=3.3.0   | >=3.2.0   | >=3.1.0   | >=3.0.0   | Yes       |
+| xlswriter  | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
+| yaml       | Yes       | Yes       | Yes       | >=2.2.3   | >=2.2.2   | >=2.2.0   | Yes       |
+| zmq        | No        | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
 
 ## Compiling PHP with SNMP on Debian 11
 
