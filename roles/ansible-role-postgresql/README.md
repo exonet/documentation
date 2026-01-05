@@ -47,6 +47,7 @@ Role variables
 | `postgresql_pgbackrest`                  | `false`                                                                 | Whether to install and configure the pgBackRest utility.            |
 | `postgresql_pgtop`                       | `false`                                                                 | Whether to install the pgtop utility                                |
 | `postgresql_pgvector`                    | `false`                                                                 | Whether to install the pgvector extension.                          |
+| `postgresql_timescaledb`                 | `false`                                                                 | Whether to install the TimescaleDB extension.                       |
 | `postgresql_postgis`                     | `false`                                                                 | Whether to install and configure Postgis.                           |
 | `postgresql_pg_repack`                   | `false`                                                                 | Whether to install the pg_repack plugin                             |
 | `postgresql_service_dependencies`        | `[]`                                                                    | A list of other services to start before starting PostgreSQL.       |
