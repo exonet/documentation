@@ -12,7 +12,6 @@ Role variables
 | nodejs_url           | The download location of the NodeJS source.                                      |
 | nodejs_npm_version   | The version of NPM to install instead of the default one that comes with NodeJS. |
 | nodejs_pm2           | Install the pm2 process manager (default: false).                                |
-| nodejs_zbarimg       | Install the zbarimg module (default: false).                                     |
 | nodejs_prefix        | The location in which the node binary will be installed.                         |
 | nodejs_user_symlinks | Ensures symlinks are set in the /home/user/bin/ directories                      |
 | nodejs_npm_packages  | Install extra npm packages, defined in a list.                                   |

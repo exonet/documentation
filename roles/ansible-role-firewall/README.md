@@ -2,24 +2,25 @@
 
 This role will manage the firewall.
 
-## Variables
+## Role Variables
 
-The `firewall` variable should be present as it provides the information the role needs, check the example below for possible options.
+Default values are only listed when they are not defined in `defaults/` or `vars/`.
 
-The following other variables can be passed to the role from the playbook.
-
-| Variable                    | Type      | Default value  | Required | Description                                                                |
-| --------------------------- | --------- | -------------- | -------- | -------------------------------------------------------------------------- |
-| `firewall_csf_version`      | `string`  | `14.18`        | No       | The version of csf to install.                                             |
-| `firewall_csf_faststart`    | `boolean` | `true`         | No       | Whether to enable the csf faststart setting.                               |
-| `firewall_csf_waitlock`     | `boolean` | `false`        | No       | Whether to enable the csf waitlock setting.                                |
-| `firewall_csf_directadmin`  | `boolean` | `false`        | No       | Ensures Exonet IP whitelists for directadmin installations.                |
-| `firewall_csf_lf_daemon`    | `boolean` | `false`        | No       | Whether to enable csf login failure daemon (lfd).                          |
-| `firewall_csf_lf_dirwatch`  | `string`  | `0`            | No       | Whether to enable csf directory watching.                                  |
-| `firewall_csf_lf_exploit`   | `string`  | `0`            | No       | Whether to enable csf system exploit checking.                             |
-| `firewall_csf_lf_integrity` | `string`  | `0`            | No       | Whether to enable csf system integrity checking.                           |
-| `firewall_csf_lf_permblock` | `boolean` | `false`        | No       | Whether to enable csf temporary to permanent blocking.                     |
-| `firewall_csf_pt_limit`     | `string`  | `0`            | No       | Whether to enable csf process tracking.                                    |
+| Name                          | Type | Default | Description |
+| ----------------------------- | ---- | ------- | ----------- |
+| `firewall`                    | dict |         | The firewall configuration containing filter rules. |
+| `firewall_shared`             | dict |         | Shared firewall configuration for servers within a setup or server group. |
+| `firewall_csf_version`        | str  |         | The version of csf to install. |
+| `firewall_csf_faststart`      | bool |         | Whether to enable the csf faststart setting. |
+| `firewall_csf_waitlock`       | bool |         | Whether to enable the csf waitlock setting. |
+| `firewall_csf_icmp_timestamp_drop` | int |    | Whether to drop ICMP timestamp requests. |
+| `firewall_csf_directadmin`    | bool |         | Ensures Exonet IP whitelists for directadmin installations. |
+| `firewall_csf_lf_daemon`      | bool |         | Whether to enable csf login failure daemon (lfd). |
+| `firewall_csf_lf_dirwatch`    | int  |         | Whether to enable csf directory watching. |
+| `firewall_csf_lf_exploit`     | int  |         | Whether to enable csf system exploit checking. |
+| `firewall_csf_lf_integrity`   | int  |         | Whether to enable csf system integrity checking. |
+| `firewall_csf_lf_permblock`   | bool |         | Whether to enable csf temporary to permanent blocking. |
+| `firewall_csf_pt_limit`       | int  |         | Whether to enable csf process tracking. |
 
 ## Example Playbook
 
@@ -119,4 +120,8 @@ The following other variables can be passed to the role from the playbook.
 
 ## Testing
 
-This role can be tested with Molecule. Install Molecule and dependencies and run `molecule test`.
+Run Molecule from the role directory:
+
+```shell
+molecule test
+```

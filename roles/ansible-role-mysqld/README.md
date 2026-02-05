@@ -28,6 +28,7 @@ The following variables are most likely used in the playbook:
 | `mysqld_bind_address`                  | `127.0.0.1`              | Define which IP address to bind MySQL on                                                                                |
 | `mysqld_version`                       |                          | The version of MySQL to install.                                                                                        |
 | `mysqld_type`                          | `server`                 | The type of MySQL to install (server or client).                                                                        |
+| `mysqld_container_image`               | `false`                  | Whether the installation type is a container image. This is only used in container builds.                              |
 | `mysqld_data_path`                     | `/home/mysql`            | Path to the data directory                                                                                              |
 | `mysqld_config_path`                   | `/etc/mysql`             | Path to the config directory                                                                                            |
 | `mysqld_log_path`                      | `/var/log/mysql`         | Path to the log directory                                                                                               |
@@ -171,3 +172,7 @@ When using multi-instance it is still possible to have a single-instance entry. 
 ## Testing
 
 This role can be tested with Molecule. Install Molecule and dependencies and run `molecule test`.
+
+## Docker image
+
+This role also contains a docker image that can be used for containers. The data in the container is non-persistent, all data is removed when the container is rebuild. Do NOT use this in production!

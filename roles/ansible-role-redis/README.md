@@ -8,24 +8,30 @@ The `redis_databases` variable should be present when using this role for config
 
 The following additional variables can be passed to the role from the playbook.
 
-| Variable                      | Type      | Default value        | Required | Description                                                                                                                         |
-|-------------------------------|-----------|----------------------|----------|-------------------------------------------------------------------------------------------------------------------------------------|
-| `redis_version_major`         | `string`  | `7.2`                | Yes      | The major version of Redis to install.                                                                                              |
-| `redis_role_mode`             | `string`  | `install`            | No       | Whether to run install tasks, config tasks or all tasks.                                                                            |
-| `redis_bind_address`          | `string`  | `127.0.0.1`          | No       | The address to bind the Redis process on.                                                                                           |
-| `redis_protected_mode`        | `boolean` | `true`               | No       | Whether to enable or disable protected-mode on user generated instances. On the default instance protected-mode is always disabled. |
-| `redis_keepalive`             | `string`  | `300`                | No       | Configure the Redis tcp-keepalive. This can be defined for all instances globally as well as per separate instance.                 |
-| `redis_timeout`               | `string`  | `120`                | No       | Configure the Redis timeout. This timeout can be defined for all instances globally as well as per separate instance.               |
-| `redis_type`                  | `string`  | `server`             | No       | Whether to install the server or only the client utilities.                                                                         |
-| `redis_service_dependencies`  | `list`    | `[]`                 | No       | A list of other services to start before starting Redis.                                                                            |
-| `redis_skip_appendonly_error` | `boolean` | `false`              | No       | Whether to skip the appendonly error message.                                                                                       |
-| `redis_loglevel`              | `string`  | `notice`             | No       | The loglevel used. This can be set to: debug, verbose, notice or warning.                                                           |
-| `redis_logfile`               | `string`  | `""`                 | No       | The path for Redis to log to, normally not defined.                                                                                 |
-| `redis_pidfile`               | `string`  | `/var/run/redis.pid` | No       | The path to the Redis PID file.                                                                                                     |
-| `redis_dir`                   | `string`  | `/var/lib/redis`     | No       | Location of the Redis database directory.                                                                                           |
-| `redis_unixsocket`            | `string`  | `""`                 | No       | The Unix socket path for the redis.sock file.                                                                                       |
-| `redis_unixsocketperm`        | `string`  | `755`                | No       | The Unix socket permissions for the redis.sock file.                                                                                |
+| Variable                      | Type      | Default value        | Required | Description                                                                                                                                               |
+|-------------------------------|-----------|----------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `redis_version_major`         | `string`  | `7.2`                | Yes      | The major version of Redis to install.                                                                                                                    |
+| `redis_role_mode`             | `string`  | `install`            | No       | Whether to run install tasks, config tasks or all tasks.                                                                                                  |
+| `redis_type`                  | `string`  | `server`             | No       | Whether to install the server or only the client utilities.                                                                                               |
+| `redis_service_dependencies`  | `list`    | `[]`                 | No       | A list of other services to start before starting Redis.                                                                                                  |
+| `redis_skip_appendonly_error` | `boolean` | `false`              | No       | Whether to skip the appendonly error message.                                                                                                             |
+| `redis_config_perm`           | `string`  | `0640`               | No       | Changes the permissions of the instance config under the `/etc/redis/` directory to allow non-default Redis instances to run under their own user.        |
+| `redis_run_as_instance`       | `boolean` | `false`              | No       | Modifies the service file to allow non-default Redis instances to run under their corresponding system user (redis instance name must match system user). |
+| `redis_bind_address`          | `string`  | `127.0.0.1`          | No       | The address to bind the Redis process on.                                                                                                                 |
 
+The following additional variables can be passed to the redis instance config from the playbook.
+
+| Variable                | Type      | Default value        | Required | Description                                                                                                                         |
+|-------------------------|-----------|----------------------|----------|------------------------------------------------------------------------------------------------------------------------------------ |
+| `protected_mode`        | `boolean` | `true`               | No       | Whether to enable or disable protected-mode on user generated instances. On the default instance protected-mode is always disabled. |
+| `keepalive`             | `string`  | `300`                | No       | Configure the Redis tcp-keepalive. This can be defined for all instances globally as well as per separate instance.                 |
+| `timeout`               | `string`  | `120`                | No       | Configure the Redis timeout. This timeout can be defined for all instances globally as well as per separate instance.               |
+| `loglevel`              | `string`  | `notice`             | No       | The loglevel used. This can be set to: debug, verbose, notice or warning.                                                           |
+| `logfile`               | `string`  | `""`                 | No       | The path for Redis to log to, normally not defined.                                                                                 |
+| `pidfile`               | `string`  | `/var/run/redis.pid` | No       | The path to the Redis PID file.                                                                                                     |
+| `dir`                   | `string`  | `/var/lib/redis`     | No       | Location of the Redis database directory.                                                                                           |
+| `unixsocket`            | `string`  | ``                   | No       | The Unix socket path for the redis.sock file.                                                                                       |
+| `unixsocketperm`        | `string`  | ``                   | No       | The Unix socket permissions for the redis.sock file.                                                                                |
 
 ## Example Playbook
 
