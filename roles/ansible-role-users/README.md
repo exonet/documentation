@@ -108,6 +108,7 @@ The following other variables can be passed to the role from the playbook.
           - ssh-rsa abc==
         inherits:
           - team-operations
+          - team-infrastructure
 
     ssh_key_groups:
       team-operations:
@@ -115,6 +116,11 @@ The following other variables can be passed to the role from the playbook.
           - name: admin
         roles:
           - server01.exonetcloud.nl
+
+      team-infrastructure:
+        users_all:
+          - server01.exonet.nl
+          - server02.exonet.nl
 
   tasks:
     - name: users
