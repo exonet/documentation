@@ -2,7 +2,7 @@
 users:
   - name: user1
     uid: 1500
-    php_version: "8.1"
+    php_version: "8.5"
     php_max_children: "16"
     composer_version: "2"
     haproxy_backend_host: true
@@ -17,7 +17,7 @@ users:
         docroot: /home/user1/domains/site.nl/public_html
         ssl: /etc/ssl/private/www_site_nl.pem
         restricted: false
-        php_version: "8.0"
+        php_version: "8.4"
         nginx_headers:
           - name: Access-Control-Allow-Origin
             value: test.nl
@@ -205,8 +205,7 @@ users:
   - name: user3
     uid: 1502
     php_fpm_master: prd
-    php_version: "8.1"
-    manage_shellrc: true # will use the shellrc file from the user role which can be overriden
+    manage_shellrc: true # will use the shellrc file from the user role which can be overridden
     shell_env:
       APP_ENVIRONMENT: prod # will add: export APP_ENVIRONMENT="prod" to the shellrc file
     domains:
@@ -243,9 +242,9 @@ users:
     domains:
       - name: site4.nl
         docroot: /home/user4/domains/site4.nl/public_html
-        ssl: /etc/ssl/private/www_site3_nl.pem
+        ssl: /etc/ssl/private/www_site4_nl.pem
         restricted: false
-        php_version: "7.4"
+        php_version: "8.5"
         nginx_headers:
           - name: Access-Control-Allow-Origin
             value: test.nl
