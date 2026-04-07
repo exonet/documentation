@@ -45,7 +45,7 @@ can't be set to "undefined", the variables that should be "undefined" are listed
 
 | Extension  | PHP 8.5   | PHP 8.4   | PHP 8.3   | PHP 8.2   | PHP 8.1   | PHP 8.0   | PHP 7.4   |
 | ---------- | --------- | --------- | --------- | --------- | --------- | --------- | --------- |
-| amqp       | No        | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
+| amqp       | >=2.2.0   | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
 | apcu       | >=5.1.27  | >=5.1.24  | Yes       | Yes       | Yes       | Yes       | Yes       |
 | blackfire  | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
 | decimal    | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
@@ -63,10 +63,10 @@ can't be set to "undefined", the variables that should be "undefined" are listed
 | memcached  | >=3.4.0   | Yes       | Yes       | Yes       | Yes       | >=3.1.4   | Yes       |
 | mongodb    | >=2.1.2   | Yes       | Yes       | >=1.15.0  | Yes       | Yes       | Yes       |
 | msgpack    | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
-| newrelic   | No        | >=11.5    | >=10.15   | >=10.7    | Yes       | Yes       | Yes       |
+| newrelic   | >=12.4    | >=11.5    | >=10.15   | >=10.7    | Yes       | Yes       | Yes       |
 | oauth      | Yes       | Yes       | Yes       | Yes       | Yes       | >=2.0.7   | Yes       |
 | oci8       | Yes       | Yes       | Yes       | >=3.3.0   | >=3.2.0   | >=3.0.0   | >=2.2.0   |
-| pdflib     | No        | >=10.0.3  | Yes       | Yes       | Yes       | >=9.3.0p5 | Yes       |
+| pdflib     | >=11.0.0  | >=10.0.3  | Yes       | Yes       | Yes       | >=9.3.0p5 | Yes       |
 | pdo_sqlsrv | No        | >=5.12.0  | Yes       | >=5.11.0  | Yes       | Yes       | <5.11     |
 | phalcon    | No        | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
 | protobuf   | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       | >=3.21.12 |

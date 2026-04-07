@@ -8,16 +8,20 @@ The `redis_databases` variable should be present when using this role for config
 
 The following additional variables can be passed to the role from the playbook.
 
-| Variable                      | Type      | Default value        | Required | Description                                                                                                                                               |
-|-------------------------------|-----------|----------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `redis_version_major`         | `string`  | `7.2`                | Yes      | The major version of Redis to install.                                                                                                                    |
-| `redis_role_mode`             | `string`  | `install`            | No       | Whether to run install tasks, config tasks or all tasks.                                                                                                  |
-| `redis_type`                  | `string`  | `server`             | No       | Whether to install the server or only the client utilities.                                                                                               |
-| `redis_service_dependencies`  | `list`    | `[]`                 | No       | A list of other services to start before starting Redis.                                                                                                  |
-| `redis_skip_appendonly_error` | `boolean` | `false`              | No       | Whether to skip the appendonly error message.                                                                                                             |
-| `redis_config_perm`           | `string`  | `0640`               | No       | Changes the permissions of the instance config under the `/etc/redis/` directory to allow non-default Redis instances to run under their own user.        |
-| `redis_run_as_instance`       | `boolean` | `false`              | No       | Modifies the service file to allow non-default Redis instances to run under their corresponding system user (redis instance name must match system user). |
-| `redis_bind_address`          | `string`  | `127.0.0.1`          | No       | The address to bind the Redis process on.                                                                                                                 |
+| Variable                      | Type      | Default value | Required | Description                                                                                                                                               |
+|-------------------------------|-----------|---------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `redis_version_major`         | `string`  | `7.2`         | Yes      | The major version of Redis to install.                                                                                                                    |
+| `redis_role_mode`             | `string`  | `install`     | No       | Whether to run install tasks, config tasks or all tasks.                                                                                                  |
+| `redis_type`                  | `string`  | `server`      | No       | Whether to install the server or only the client utilities.                                                                                               |
+| `redis_service_dependencies`  | `list`    | `[]`          | No       | A list of other services to start before starting Redis.                                                                                                  |
+| `redis_skip_appendonly_error` | `boolean` | `false`       | No       | Whether to skip the appendonly error message.                                                                                                             |
+| `redis_config_perm`           | `string`  | `0640`        | No       | Changes the permissions of the instance config under the `/etc/redis/` directory to allow non-default Redis instances to run under their own user.        |
+| `redis_run_as_instance`       | `boolean` | `false`       | No       | Modifies the service file to allow non-default Redis instances to run under their corresponding system user (redis instance name must match system user). |
+| `redis_bind_address`          | `string`  | `127.0.0.1`   | No       | The address to bind the Redis process on.                                                                                                                 |
+| `redis_restart_on_config`     | `boolean` | `true`        | No       | Whether to automatically restart Redis instances when the configuration changes. When `false`, a `/.redis_restart_required` file is created instead.      |
+| `redis_restart_on_upgrade`    | `boolean` | `true`        | No       | Whether to automatically restart Redis when the version changes. When `false`, a `/.redis_restart_required` file is created instead.                      |
+| `redis_container_image`       | `boolean` | `false`       | No       | Whether the installation type is a container image. This is only used in container builds.                                                                |
+| `redis_start_timeout`         | `string`  | `90`          | No       | Changes the seconds for `TimeoutStartSec` in the Redis service file to prevent timeouts when starting.                                                    |
 
 The following additional variables can be passed to the redis instance config from the playbook.
 
@@ -69,6 +73,16 @@ The following additional variables can be passed to the redis instance config fr
             redis_keepalive: "400"
       tags: [redis]
 ```
+
+## Tags
+
+| Tag                    | Description                                                                                                          |
+|------------------------|----------------------------------------------------------------------------------------------------------------------|
+| `redis_force_restart`  | Restart Redis services only for detected configuration or upgrade changes, even when `redis_restart_on_config` or `redis_restart_on_upgrade` are `false`. |
+
+## Docker image
+
+This role also contains a docker image that can be used for containers. The data in the container is non-persistent, all data is removed when the container is rebuild. Do NOT use this in production!
 
 ## Testing
 
