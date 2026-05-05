@@ -95,9 +95,9 @@ If unset, mail delivery is disabled.
               - server01.example.com
 
   tasks:
-    - name: crons
+    - name: Crons
       block:
-        - include_role:
+        - ansible.builtin.include_role:
             name: ansible-role-crons
           vars:
             crons_random_delay: true

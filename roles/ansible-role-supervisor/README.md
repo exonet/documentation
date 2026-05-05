@@ -8,12 +8,16 @@ The `processes` variable can be added to an user when using this role for config
 
 The following additional variables can be passed to the role from the playbook.
 
-| Variable                           | Type     | Default value  | Required | Description                                                                |
-| ---------------------------------- | -------- | -------------- | -------- | -------------------------------------------------------------------------- |
-| `supervisor_version_major`         | `string` | `4.2`          | Yes      | The major version of Supervisor to install.                                |
-| `supervisor_role_mode`             | `string` | `install`      | No       | Specifies whether to run install tasks, config tasks or all tasks.         |
-| `supervisor_logging_version_major` | `string` | `none`         | No       | The major version of the Supervisor logging plugin to install.             |
-| `supervisor_http_server_address`   | `string` | `none`         | No       | The address to listen on for the built-in http server.                     |
+Default values are only listed when they are not defined in `defaults/` or `vars/`.
+
+| Name                               | Type  | Default | Description                                                        |
+| ---------------------------------- | ----- | ------- | ------------------------------------------------------------------ |
+| `supervisor_http_server_address`   | `str` |         | The address to listen on for the built-in http server.             |
+| `supervisor_logging_version_major` | `str` |         | The major version of the Supervisor logging plugin to install.     |
+| `supervisor_numprocs`              | `int` |         | The default number of processes for each supervised program.       |
+| `supervisor_role_mode`             | `str` |         | Specifies whether to run install tasks, config tasks or all tasks. |
+| `supervisor_startretries`          | `int` |         | The default number of start retries for each supervised program.   |
+| `supervisor_version_major`         | `str` |         | The major version of Supervisor to install.                        |
 
 ## Example Playbook
 
@@ -38,16 +42,19 @@ The following additional variables can be passed to the role from the playbook.
               - server01.exonetcloud.nl
 
   tasks:
-    - name: supervisor
-      block:
-        - include_role:
-            name: ansible-role-supervisor
-          vars:
-            supervisor_role_mode: all
-            supervisor_version_major: "4.2"
+    - name: Install Supervisor
+      ansible.builtin.include_role:
+        name: ansible-role-supervisor
+      vars:
+        supervisor_role_mode: all
+        supervisor_version_major: "4.2"
       tags: [supervisor]
 ```
 
 ## Testing
 
-This role can be tested with Molecule. Install Molecule and dependencies and run `molecule test`.
+Run Molecule from the role directory:
+
+```shell
+molecule test
+```

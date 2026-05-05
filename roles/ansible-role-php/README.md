@@ -2,39 +2,44 @@
 
 This role will install and manage PHP.
 
-## Variables
+## Role Variables
+
+Default values are only listed when they are not defined in `defaults/` or `vars/`.
 
 The `users` variable should be present when using this role for configuration as it provides the information the role needs. Check the example playbook below for possible options in this variable.
 
-The following additional variables can be passed to the role from the playbook.
-
-| Variable                        | Type      | Default value     | Required | Description                                                                         |
-| ------------------------------- | --------- | ----------------- | -------- | ----------------------------------------------------------------------------------- |
-| `php_version_major`             | `string`  | `8.0`             | Yes      | The major version of PHP to install.                                                |
-| `php_role_mode`                 | `string`  | `install`         | No       | Whether to run install tasks, config tasks or all tasks.                            |
-| `php_type`                      | `string`  | `fpm`             | No       | Which type of PHP to install (fpm, apxs2 or cli).                                   |
-| `php_webserver`                 | `string`  | `nginx`           | No       | Which webserver is being used with PHP (nginx or apache2).                          |
-| `php_service`                   | `boolean` | `true`            | No       | Whether to install and use a systemd service.                                       |
-| `php_multiple_instances`        | `boolean` | `false`           | No       | Whether to enable multiple instances support.                                       |
-| `php_removed`                   | `boolean` | `false`           | No       | Whether to remove this PHP version.                                                 |
-| `php_resource_limit`            | `boolean` | `false`           | No       | Whether to enable cgroup resource limits.                                           |
-| `php_resource_limit_memory`     | `string`  | none              | No       | The cgroup memory resource limit.                                                   |
-| `php_zend_extensions_enable`    | `list`    | Active extensions | No       | The list of Zend extensions to enable in the `extensions.ini` config file.          |
-| `php_pecl_extensions_enable`    | `list`    | Active extensions | No       | The list of extensions to enable in the `extensions.ini` config file.               |
-| `php_pecl_extensions`           | `list`    | `[]`              | No       | The list of custom PECL extensions to install. See example for structure details.   |
-| `php_cachetool`                 | `boolean` | `false`           | No       | Whether to install CacheTool for PHP.                                               |
-| `php_extension_*`               | `boolean` | `false`           | No       | Whether to install this PHP extension (see matrix below for a list).                |
-| `php_extension_*_version_major` | `string`  | none              | No       | The major version of the extension to install (see matrix below for compatibility). |
-| `php_extension_newrelic_error_collector_ignore_exceptions` | `string` | none | No | Exceptions to ignore in the New Relic error collector.                       |
-| `php_fpm_pm`                    | `string`  | `ondemand`        | No       | Choose how the process manager will control the number of child processes.          |
-| `php_fpm_pm_max_children`       | `int`     | `32`              | No       | The default amount of maximum spawned php-fpm children.                             |
-| `php_fpm_pm_max_requests`       | `int`     | `0`               | No       | The maximum requests each php-fpm child process should execute before respawning.   |
-| `php_fpm_pm_max_spare_servers`  | `int`     | `2`               | No       | The desired maximum number of idle server processes. Used only when pm is set to dynamic.
-| `php_fpm_pm_min_spare_servers`  | `int`     | `1`               | No       | The desired minimum number of idle server processes. Used only when pm is set to dynamic.
-| `php_fpm_pm_start_servers`      | `int`     | `min_spare_servers + (max_spare_servers - min_spare_servers) / 2.` | The number of child processes created on startup. Used only when pm is set to dynamic. |
-| `php_fpm_request_terminate_timeout` | `string` | `0`            | No       | The timeout for serving a single request after which the worker process will be killed. |
-| `php_fpm_admin_values`          | `dict`    | `{}`              | No       | The dict of custom added php-fpm admin values.                                      |
-| `php_fpm_values`                | `dict`    | `{}`              | No       | The dict of custom added php-fpm values.                                            |
+| Name                                                      | Type | Default | Description |
+| --------------------------------------------------------- | ---- | ------- | ----------- |
+| `php_cachetool`                                           | bool |         | Whether to install CacheTool for PHP. |
+| `php_extension_*`                                         | bool |         | Whether to install this PHP extension (see matrix below for a list). |
+| `php_extension_*_version_major`                           | str  |         | The major version of the extension to install (see matrix below for compatibility). |
+| `php_extension_newrelic_enabled`                          | bool |         | Whether to enable the New Relic extension after installation. |
+| `php_extension_newrelic_error_collector_ignore_exceptions` | str  |         | Exceptions to ignore in the New Relic error collector. |
+| `php_fpm_admin_values`                                    | dict |         | The dict of custom added PHP-FPM admin values. |
+| `php_fpm_pm`                                              | str  |         | How the process manager will control the number of child processes. |
+| `php_fpm_pm_max_children`                                 | int  |         | The default amount of maximum spawned PHP-FPM children. |
+| `php_fpm_pm_max_requests`                                 | int  |         | The maximum requests each PHP-FPM child process should execute before respawning. |
+| `php_fpm_pm_max_spare_servers`                            | int  |         | The desired maximum number of idle server processes. Used only when pm is set to dynamic. |
+| `php_fpm_pm_min_spare_servers`                            | int  |         | The desired minimum number of idle server processes. Used only when pm is set to dynamic. |
+| `php_fpm_pm_start_servers`                                | int  |         | The number of child processes created on startup. Used only when pm is set to dynamic. |
+| `php_fpm_request_terminate_timeout`                       | str  |         | The timeout for serving a single request after which the worker process will be killed. |
+| `php_fpm_values`                                          | dict |         | The dict of custom added PHP-FPM values. |
+| `php_fpm_pool_values`                                     | dict |         | The dict of custom added PHP-FPM pool values. |
+| `php_logrotate_frequency`                                 | str  |         | The frequency of PHP-FPM log rotation. |
+| `php_logrotate_rotate`                                    | str  |         | The number of rotated log files to keep. |
+| `php_multiple_instances`                                  | bool |         | Whether to enable multiple instances support. |
+| `php_pecl_extensions`                                     | list |         | The list of custom PECL extensions to install. See example for structure details. |
+| `php_pecl_extensions_enable`                              | list |         | The list of extensions to enable in the `extensions.ini` config file. |
+| `php_removed`                                             | bool |         | Whether to remove this PHP version. |
+| `php_resource_limit`                                      | bool |         | Whether to enable cgroup resource limits. |
+| `php_resource_limit_memory`                               | bool |         | The cgroup memory resource limit. |
+| `php_role_mode`                                           | str  |         | Whether to run install tasks, config tasks or all tasks. |
+| `php_service`                                             | bool |         | Whether to install and use a systemd service. |
+| `php_settings_extra`                                      | dict |         | Extra PHP configuration settings for rarely used directives. |
+| `php_type`                                                | str  |         | Which type of PHP to install (fpm, apxs2 or cli). |
+| `php_version_major`                                       | str  |         | The major version of PHP to install. |
+| `php_webserver`                                           | str  |         | Which webserver is being used with PHP (Nginx or Apache). |
+| `php_zend_extensions_enable`                              | list |         | The list of Zend extensions to enable in the `extensions.ini` config file. |
 
 Check `defaults/main.yml` for more variables to build certain options in PHP and set various settings in the `custom.ini` and `extensions.ini`.
 All variables that can be overridden are in `defaults/main.yml`. Due to the fact that in Ansible a variable
@@ -101,7 +106,7 @@ There are three possible settings for OPcache. From fastest to safest.
 
 This option never validates timestamps so the cache will never expire until it's manually reset. Always use this option when the client has a deployment process that resets the OPcache after each deployment.
 
-```
+```ini
 opcache.validate_timestamps = 0
 ```
 
@@ -109,7 +114,7 @@ opcache.validate_timestamps = 0
 
 This option validates the timestamp every X seconds. Use this option if the client does not use a deployment process to reset the OPcache after a deployment. This is also the default option.
 
-```
+```ini
 opcache.revalidate_freq = 60
 ```
 
@@ -117,7 +122,7 @@ opcache.revalidate_freq = 60
 
 These options always validate timestamps and permissions to make sure the correct user is accessing the OPcache. Use these options on servers which have untrusted users (like shared hosting).
 
-```
+```ini
 opcache.enable_file_override = 1
 opcache.validate_permission = 1
 opcache.revalidate_freq = 0
@@ -150,9 +155,9 @@ opcache.revalidate_path = 1
           - web01.domain.tld # if the server is replaced, the config files has te be removed manually from the server.
 
   tasks:
-    - name: php
+    - name: PHP
       block:
-        - include_role:
+        - ansible.builtin.include_role:
             name: ansible-role-php
           vars:
             php_role_mode: all
@@ -162,7 +167,7 @@ opcache.revalidate_path = 1
             php_webserver: nginx
             php_extension_redis: true
             php_extension_redis_version_major: "5.3"
-        - include_role:
+        - ansible.builtin.include_role:
             name: ansible-role-php
           vars:
             php_role_mode: all
@@ -179,7 +184,7 @@ opcache.revalidate_path = 1
                 version: "1.0.5"
               - name: swoole
                 version: "5.0.0"
-        - include_role:
+        - ansible.builtin.include_role:
             name: ansible-role-php
           vars:
             php_role_mode: all
@@ -195,4 +200,8 @@ opcache.revalidate_path = 1
 
 ## Testing
 
-This role can be tested with Molecule. Install Molecule and dependencies and run `molecule test`.
+Run Molecule from the role directory:
+
+```shell
+molecule test
+```

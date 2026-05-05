@@ -158,6 +158,7 @@ The default value of a variable is only listed if it's not defined in `defaults/
 | nginx_rate_limit                                        | list | undefined | The nginx rate limit. |
 | nginx_real_ip_header                                    | str  |           | Set the nginx real_ip_header. |
 | nginx_release                                           | str  |           | Define the release line of nginx. "stable" for production, "latest" for dev/test/accp/staging servers. |
+| nginx_require_ssl                                       | bool | `ansible_local.base.compliance` | When enabled, the role fails during preflight if any domain does not have an SSL certificate (`domain.ssl`) configured. |
 | nginx_restart_graceful                                  | bool |           | Try to restart Nginx gracefully without interruption. |
 | nginx_restricted                                        | bool |           | Default for `domain.restricted`. |
 | nginx_role_mode                                         | str  |           | Specify how the role behaves. |
@@ -426,7 +427,6 @@ users:
             nginx_upstream: test2
 ```
 
-
 ## Extensions
 
 ### Passenger Enterprise Support
@@ -435,4 +435,8 @@ To use Passenger Enterprise, a download key and license file are required. Place
 
 ## Testing
 
-This role can be tested with Molecule. Install Molecule and dependencies and run `molecule test`.
+Run Molecule from the role directory:
+
+```shell
+molecule test
+```
