@@ -13,8 +13,10 @@ The default value of a variable is only listed if it's not defined in `defaults/
 | nginx_application_php                                   | bool |           | Whether to add the PHP location block. |
 | nginx_auth_basic_message                                | str  |           | Set auth basic message. |
 | nginx_bad_agents_abuse                                  | list |           | Default abusive user-agent list. |
+| nginx_bad_agents_allowed                                | list |           | User-agents to exclude from the block list. |
 | nginx_bad_agents_block                                  | bool |           | Whether to block user agents based on `nginx_bad_agents`. |
 | nginx_bad_agents_block_missing                          | bool |           | Whether to block user agents that are empty or contain only blank spaces. |
+| nginx_bad_agents_extra                                  | list |           | Additional user-agents to add to the block list. |
 | nginx_brotli_module                                     | bool |           | Include Brotli module (default: false). |
 | nginx_brotli_module_version                             | str  |           | The version of the Brotli module source to use. |
 | nginx_buffer_logs                                       | str  |           | Buffer the writing to the log files. |
@@ -53,17 +55,21 @@ The default value of a variable is only listed if it's not defined in `defaults/
 | nginx_geoip_return_status                               | int  |           | The http return status code when an IP is blocked by GeoIP. |
 | nginx_global_fastcgi_settings                           | list |           | Set nginx fastcgi settings globally. |
 | nginx_global_headers                                    | list | []        | Set nginx headers globally. |
+| nginx_global_proxy_settings                             | list |           | Global proxy settings merged into all domain proxy configurations. |
 | nginx_global_upstream_settings                          | list | []        | Global upstream settings merged into per-user and per-domain upstream settings. |
 | nginx_graylog_address                                   | bool |           | The Graylog server for nginx logging. |
 | nginx_graylog_port_access                               | int  |           | The Graylog server port for access logs. |
 | nginx_graylog_port_error                                | int  |           | The Graylog server port for error logs. |
 | nginx_greedy_user_agents_default                        | list |           | Default greedy user-agent list. |
-| nginx_greedy_user_agents_list                           | str  |           | Computed list of greedy user agents that will be rate limited. |
+| nginx_greedy_user_agents                                | bool |           | Whether to rate limit greedy user agents. |
+| nginx_greedy_user_agents_allowed                        | list |           | User-agents to exclude from greedy rate limiting. |
+| nginx_greedy_user_agents_burst                          | str  |           | Burst allowance before greedy rate limiting applies. |
+| nginx_greedy_user_agents_extra                          | list |           | Additional user-agents to rate limit as greedy. |
 | nginx_greedy_user_agents_memory_size                    | str  |           | Memory size for greedy user-agent limit zone. |
+| nginx_greedy_user_agents_rate_limit                     | str  |           | Rate limit for greedy user agents. |
 | nginx_gzip_comp_level                                   | int  |           | Sets a gzip compression level of a response. Acceptable values are in the range from 1 to 9. |
 | nginx_gzip_min_length                                   | int  |           | Sets the minimum length of a response that will be gzipped. |
 | nginx_gzip_proxied                                      | str  |           | Enables or disables gzipping of responses for proxied requests depending on the request and response. |
-| nginx_gzip_types                                        | str  |           | Combined list of MIME types that should be gzipped. |
 | nginx_gzip_types_extra                                  | list |           | Additional content types to gzip. |
 | nginx_headers_more_module                               | bool |           | Include HttpHeadersMoreModule |
 | nginx_headers_more_module_url                           | str  |           | The download location of the headers_more_module source. |
@@ -83,7 +89,6 @@ The default value of a variable is only listed if it's not defined in `defaults/
 | nginx_logrotate_rotate                                  | str  |           | The amount of days to keep for log rotation. |
 | nginx_map_hash_bucket_size                              | int  |           | The value for map_hash_bucket_size. |
 | nginx_maps                                              | list | []        | Map include definitions used to validate map include files. |
-| nginx_mime_types                                        | str  |           | Combined MIME types list. |
 | nginx_mime_types_extra                                  | list |           | Extra Mime types for extensions. |
 | nginx_modsecurity_audit_log_basedir                     | str  |           | Base directory for ModSecurity audit logs. |
 | nginx_modsecurity_audit_log_format                      | str  |           | Audit log format (Native/JSON) |
@@ -153,8 +158,8 @@ The default value of a variable is only listed if it's not defined in `defaults/
 | nginx_rate_limit                                        | list | undefined | The nginx rate limit. |
 | nginx_real_ip_header                                    | str  |           | Set the nginx real_ip_header. |
 | nginx_release                                           | str  |           | Define the release line of nginx. "stable" for production, "latest" for dev/test/accp/staging servers. |
+| nginx_require_ssl                                       | bool | `ansible_local.base.compliance` | When enabled, the role fails during preflight if any domain does not have an SSL certificate (`domain.ssl`) configured. |
 | nginx_restart_graceful                                  | bool |           | Try to restart Nginx gracefully without interruption. |
-| nginx_restart_handler                                   | str  |           | ternary('Graceful restart nginx', 'Restart nginx') }}` |
 | nginx_restricted                                        | bool |           | Default for `domain.restricted`. |
 | nginx_role_mode                                         | str  |           | Specify how the role behaves. |
 | nginx_rtmp_module                                       | bool |           | Include the RTMP module. |
@@ -383,7 +388,7 @@ users:
 
 The `custom_upstream` (name as desired) application template can call `nginx_upstream_proxy` with the upstream name:
 
-```text
+```jinja2
 {% from "templates/macros/upstream_proxy.j2" import nginx_upstream_proxy with context %}
 
   location /legacy {
@@ -422,7 +427,6 @@ users:
             nginx_upstream: test2
 ```
 
-
 ## Extensions
 
 ### Passenger Enterprise Support
@@ -431,4 +435,8 @@ To use Passenger Enterprise, a download key and license file are required. Place
 
 ## Testing
 
-This role can be tested with Molecule. Install Molecule and dependencies and run `molecule test`.
+Run Molecule from the role directory:
+
+```shell
+molecule test
+```

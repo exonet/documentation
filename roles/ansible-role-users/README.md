@@ -8,18 +8,20 @@ The `users`, `user_groups`, `system_users` and `ssh_keys` variables must be pres
 
 The following other variables can be passed to the role from the playbook.
 
-| Variable                                    | Type         | Default value           | Required | Description                                                                                       |
-| ------------------------------------------- | -------------| ----------------------- | -------- | ------------------------------------------------------------------------------------------------- |
-| `users_role_mode`                           | `string`     | `tasks`                 | No       | Whether to run the create (`tasks`) or the removed (`post_tasks`) tasks.                          |
-| `users_exonet_allowed`                      | `boolean`    | `false`                 | No       | Allow the usage of 'exonet' in the username, for backwards compatibility.                         |
-| `users_generate_ssh_key`                    | `boolean`    | `false`                 | No       | Whether a ssh key is created by default for each user.                                            |
-| `users_home_mode`                           | `string`     | `0711`                  | No       | The permissions set on the /home folder.                                                          |
-| `users_manage_shellrc`                      | `boolean`    | `false`                 | No       | Whether to use the managed `[.bashrc, .zshrc, etc]` file for each user.                           |
-| `users_shared`                              | `boolean`    | `false`                 | No       | Whether a shared environment (like NFS) is used for the /home folder.                             |
-| `users_shell_history_central_logging_path`  | `string`     | `/var/log/shell_history`| No       | Set shell history file path.                                                                      |
-| `users_shell_history_central_logging`       | `boolean`    | `false`                 | No       | Log shell history files centrally.                                                                |
-| `users_ulimits`                             | `dictionary` | `{}`                    | No       | Used to override the default shell limits. May require a restart of a service to take effect.     |
-| `users_tasks_web`                           | `boolean`    | `true`                  | No       | Whether to run the `users-web` task file that creates the domains and underlying docroot folders. |
+Default values are only listed when they are not defined in `defaults/` or `vars/`.
+
+| Name                                       | Type   | Default | Description                                                                                                               |
+| ------------------------------------------ | ------ | ------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `users_exonet_allowed`                     | `bool` |         | Allow the usage of 'exonet' in the username, for backwards compatibility.                                                 |
+| `users_generate_ssh_key`                   | `bool` |         | Whether a ssh key is created by default for each user.                                                                    |
+| `users_home_mode`                          | `str`  |         | The permissions set on the /home folder.                                                                                  |
+| `users_manage_shellrc`                     | `bool` |         | Whether to use the managed `[.bashrc, .zshrc, etc]` file for each user.                                                   |
+| `users_role_mode`                          | `str`  |         | Whether to run the create (`tasks`) or the removed (`post_tasks`) tasks.                                                  |
+| `users_shared`                             | `bool` |         | Whether a shared environment (like NFS) is used for the /home folder.                                                     |
+| `users_shell_history_central_logging`      | `bool` |         | Log shell history files centrally.                                                                                        |
+| `users_shell_history_central_logging_path` | `str`  |         | Set shell history file path.                                                                                              |
+| `users_tasks_web`                          | `bool` |         | Whether to run the `users-web` task file that creates the domains and underlying docroot folders.                         |
+| `users_ulimits`                            | `dict` |         | Used to override the default shell limits. May require a restart of a service to take effect.                             |
 
 ## Example Playbook
 
@@ -123,8 +125,8 @@ The following other variables can be passed to the role from the playbook.
           - server02.exonet.nl
 
   tasks:
-    - name: users
-      include_role:
+    - name: Configure users
+      ansible.builtin.include_role:
         name: ansible-role-users
       vars:
         users_role_mode: tasks
@@ -139,8 +141,8 @@ The following other variables can be passed to the role from the playbook.
       tags: [users]
 
   post_tasks:
-    - name: users
-      include_role:
+    - name: Remove users
+      ansible.builtin.include_role:
         name: ansible-role-users
       vars:
         users_role_mode: post_tasks
@@ -149,4 +151,8 @@ The following other variables can be passed to the role from the playbook.
 
 ## Testing
 
-This role can be tested with Molecule. Install Molecule and dependencies and run `molecule test`.
+Run Molecule from the role directory:
+
+```shell
+molecule test
+```

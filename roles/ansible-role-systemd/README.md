@@ -1,8 +1,8 @@
-# Systemd
+# systemd
 
 This role will manage the systemd services for users.
 
-## Variables
+## Role Variables
 
 The `services` variable must always be present as it provides the information the role needs, check the example below for possible options.
 
@@ -48,11 +48,15 @@ The `services` variable must always be present as it provides the information th
   tasks:
     - name: systemd
       block:
-        - include_role:
+        - ansible.builtin.include_role:
             name: ansible-role-systemd
       tags: [systemd]
 ```
 
 ## Testing
 
-This role can be tested with Molecule. Install Molecule and dependencies and run `molecule test`.
+Run Molecule from the role directory:
+
+```shell
+molecule test
+```
