@@ -88,6 +88,7 @@ The default value of a variable is only listed if it's not defined in `defaults/
 | nginx_logrotate_frequency                               | str  |           | The frequency of the log rotation. |
 | nginx_logrotate_rotate                                  | str  |           | The amount of days to keep for log rotation. |
 | nginx_map_hash_bucket_size                              | int  |           | The value for map_hash_bucket_size. |
+| nginx_map_hash_max_size                                 | int  |           | The value for map_hash_max_size. |
 | nginx_maps                                              | list | []        | Map include definitions used to validate map include files. |
 | nginx_mime_types_extra                                  | list |           | Extra Mime types for extensions. |
 | nginx_modsecurity_audit_log_basedir                     | str  |           | Base directory for ModSecurity audit logs. |
@@ -158,7 +159,7 @@ The default value of a variable is only listed if it's not defined in `defaults/
 | nginx_rate_limit                                        | list | undefined | The nginx rate limit. |
 | nginx_real_ip_header                                    | str  |           | Set the nginx real_ip_header. |
 | nginx_release                                           | str  |           | Define the release line of nginx. "stable" for production, "latest" for dev/test/accp/staging servers. |
-| nginx_require_ssl                                       | bool | `ansible_local.base.compliance` | When enabled, the role fails during preflight if any domain does not have an SSL certificate (`domain.ssl`) configured. |
+| nginx_require_ssl                                       | bool |           | When enabled, the role fails during preflight if any domain does not have an SSL certificate (`domain.ssl`) configured. |
 | nginx_restart_graceful                                  | bool |           | Try to restart Nginx gracefully without interruption. |
 | nginx_restricted                                        | bool |           | Default for `domain.restricted`. |
 | nginx_role_mode                                         | str  |           | Specify how the role behaves. |
@@ -184,6 +185,7 @@ The default value of a variable is only listed if it's not defined in `defaults/
 | nginx_ssl_ciphers                                       | str  |           | The SSL/TLS ciphers that nginx will support. |
 | nginx_ssl_prefer_server_ciphers                         | bool |           | The nginx ssl_prefer_server_ciphers. |
 | nginx_ssl_protocols                                     | list |           | The SSL/TLS protocols that nginx will support. |
+| nginx_ssl_certificate_search_paths                      | list |           | Paths where SSL certificates are installed. |
 | nginx_task_nginx                                        | bool | true      | Whether to run the main nginx configuration task set. |
 | nginx_task_nginx_modsecurity                            | bool | false     | Whether to run the ModSecurity configuration tasks. |
 | nginx_task_nginx_removed                                | bool | true      | Whether to run the nginx removal tasks. |
@@ -331,6 +333,22 @@ users:
         geoip_default: "allow" # Overrides user-level default: allow all countries
         geoip_countries:       # Overrides user-level countries, which will be denied
           - "FR"
+```
+
+### Logging
+
+By default, access and error logs are written using the domain name as the filename (e.g. `example.nl.access.log`). You can override the filename per domain using `access_log_file` and `error_log_file`. Setting either to a string uses that value as the log filename; setting it to `false` disables that log entirely.
+
+> **Note:** Custom log filenames must end in `.log` to be picked up by logrotate. Files with a different extension will not be rotated automatically.
+
+```yaml
+users:
+  - name: example
+    uid: 1500
+    domains:
+      - name: example.nl
+        access_log_file: "custom-access.log"  # writes to /var/log/nginx/custom-access.log
+        error_log_file: false                  # disables error logging for this domain
 ```
 
 ### Rate Limiting

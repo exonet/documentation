@@ -31,6 +31,8 @@ Variables with a default value defined in `defaults/` or `vars/` have their Defa
 | `postgresql_config_dir`                    | str    |         | The directory containing PostgreSQL configuration files. |
 | `postgresql_config_options_extra`          | dict   |         | A dictionary of extra configuration options to add to `postgresql.conf`. |
 | `postgresql_data_dir`                      | str    |         | The directory used for PostgreSQL data storage. |
+| `postgresql_databases`                     | list   |         | A list of databases to create. Each entry is a dict with at least `name` and `owner`. See `postgresql_databases` below for the full schema. |
+| `postgresql_debug`                         | bool   |         | Enable verbose debug output for role internals (role/owner/password lookups). |
 | `postgresql_listen_address`                | str    |         | Define which IP address PostgreSQL should listen on. |
 | `postgresql_listen_port`                   | int    |         | Define which port PostgreSQL should listen on. |
 | `postgresql_log_directory`                 | str    |         | Specify the logging collector directory. |
@@ -58,15 +60,20 @@ Variables with a default value defined in `defaults/` or `vars/` have their Defa
 | `postgresql_pgvector`                      | bool   |         | Whether to install the pgvector extension. |
 | `postgresql_pgvector_version`              | str    |         | The version of pgvector to install. |
 | `postgresql_postgis`                       | bool   |         | Whether to install and configure the PostGIS extension. |
+| `postgresql_postgis_gdal_version`          | str    |         | The version of the GDAL library to install with PostGIS. |
+| `postgresql_postgis_proj_version`          | str    |         | The version of the PROJ library to install with PostGIS. |
 | `postgresql_postgis_version`               | str    |         | The version of PostGIS to install. |
 | `postgresql_role_mode`                     | str    |         | Whether to run install, config, or all tasks. |
+| `postgresql_roles`                         | list   |         | A list of PostgreSQL roles with their database privileges. See `postgresql_roles` below for the full schema. |
 | `postgresql_service_dependencies`          | list   |         | A list of other services to start before starting PostgreSQL. |
 | `postgresql_shared_buffers`                | str    |         | Configure the shared buffer size. |
 | `postgresql_shared_preload_libraries`      | list   |         | A list of shared preload libraries. |
 | `postgresql_timescaledb`                   | bool   |         | Whether to install the TimescaleDB extension. |
 | `postgresql_timescaledb_plugin_version`    | str    |         | The version of TimescaleDB to install. |
 | `postgresql_type`                          | str    |         | The type of PostgreSQL to install (server or client). |
+| `postgresql_users`                         | list   |         | A list of PostgreSQL users with their database privileges. See `postgresql_users` below for the full schema. |
 | `postgresql_version`                       | str    |         | The version of PostgreSQL to install. |
+| `postgresql_version_addition`              | str    |         | The pgdg package addition for the selected PostgreSQL version (for example `1` in `18.3-1.pgdg12+1`). |
 | `postgresql_wal_keep_segments`             | int    |         | Configure the WAL keep segments for PostgreSQL versions below 13. |
 | `postgresql_wal_keep_size`                 | int    |         | Configure the WAL keep size in megabytes. |
 | `postgresql_wal_level`                     | str    |         | Configure the WAL level (replica, minimal, or logical). |
@@ -82,7 +89,7 @@ postgresql_pg_hba_config_extra:
     address: "10.5.136.70/32"
     method: "trust"
   - type: "host"
-    database:  "all"
+    database: "all"
     user: "barman"
     address: "10.5.136.70/32"
     method: "md5"
@@ -96,10 +103,107 @@ postgresql_config_options_extra:
   "log_destination": "'syslog'"
 ```
 
-## Pgbackrest secrets
+## PostgreSQL databases and users
 
-Pgbackrest secrets should be set manually in /etc/pgbackrest/conf.d/ directory.
-You can define [directives] in these that already exists in the global config to set a secret.
+The PostgreSQL databases are defined via the `postgresql_databases` variable. It contains a list of dicts. Every dict entry has a `name` and an `owner` property. For example:
+
+```yaml
+postgresql_databases:
+  - name: example_db
+    owner: example_user
+```
+
+> **Note**: `postgresql_users` is kept for backwards compatibility. For new configurations, prefer [`postgresql_roles`](#postgresql-roles), which offers more flexibility (for example, default privileges on newly created objects). Only one of `postgresql_users` or `postgresql_roles` may be defined at a time.
+
+The PostgreSQL users are defined via the `postgresql_users` variable. It contains a list of dicts. Every dict has a `name` which is the role name and a list of databases below the `database` property. The database property contains a list of databases and privileges for that database. It is limited to only database, function, sequence for table privileges. All users are getting `SCHEMA` privileges on the database. When specific privileges are not present, only the owner can access the database. An example is provided below:
+
+```yaml
+postgresql_users:
+  - name: example_user
+    databases:
+      - name: example_db
+        database_privileges:
+          - ALL
+        function_privileges:
+          - ALL
+        sequence_privileges:
+          - ALL
+        table_privileges:
+          - ALL
+  - name: example_read_only_user
+    databases:
+      - name: example_db
+        database_privileges:
+          - CONNECT
+        function_privileges:
+          - SELECT
+        sequence_privileges:
+          - SELECT
+        table_privileges:
+          - SELECT
+  - name: metabase
+    databases:
+      - name: metabase
+```
+
+## PostgreSQL roles
+
+The PostgreSQL privileges are defined via the `postgresql_roles` variable. It contains a list of dicts. Every dict has a `name` which is the name of the role and a list of databases below the `database` property. The database property contains a list of databases, privileges and default privileges. The privileges list contains a list of dicts with the specific privileges. The privilege dict contains the `type` of privilege, on which objects the privileges apply using `objs` and a list of privileges via `privs`. The default privileges property allows the role to automatically obtain privileges on newly created items in the database. For example a new schema.
+
+More information can be found on the [Grant or revoke privileges on PostgreSQL database objects](https://docs.ansible.com/projects/ansible/latest/collections/community/postgresql/postgresql_privs_module.html) page of the [community.postgresql](https://docs.ansible.com/projects/ansible/latest/collections/community/postgresql/index.html) collection.
+
+An example:
+
+```yaml
+postgresql_roles:
+  - name: example_role
+    database:
+      - name: example_db
+        privileges:
+          - type: database
+            privs:
+              - ALL
+          - type: table
+            objs: ALL_IN_SCHEMA
+            privs:
+              - ALL
+          - type: sequence
+            objs: ALL_IN_SCHEMA
+            privs:
+              - ALL
+        default_privileges:
+          - objs:
+              - TABLES
+              - SEQUENCES
+            privs:
+              - ALL
+  - name: example_readonly_role
+    database:
+      - name: example_db
+        privileges:
+          - type: database
+            privs:
+              - CONNECT
+          - type: table
+            objs: ALL_IN_SCHEMA
+            privs:
+              - SELECT
+          - type: sequence
+            objs: ALL_IN_SCHEMA
+            privs:
+              - SELECT
+        default_privileges:
+          - objs:
+              - TABLES
+              - SEQUENCES
+            privs:
+              - SELECT
+```
+
+## pgBackRest secrets
+
+pgBackRest secrets should be set manually in the `/etc/pgbackrest/conf.d/` directory.
+You can define `[directives]` in these that already exist in the global config to set a secret.
 
 ```bash
 [global]
@@ -110,7 +214,7 @@ repo1-cipher-pass=$long-passphrase
 
 For example using Minio Object Storage with encrypted backups:
 
-```yml
+```yaml
 postgresql_pgbackrest_repos:
   - name: repo1
     # example retention 6 week + last 7 days
@@ -126,7 +230,7 @@ postgresql_pgbackrest_repos:
     path: /pgbackrest
 ```
 
-## Pgvector
+## pgvector
 
 Enable the extension per database (run once in each DB that should use it):
 
@@ -134,7 +238,7 @@ Enable the extension per database (run once in each DB that should use it):
 CREATE EXTENSION vector;
 ```
 
-Pgvector upgrades are a two-step process:
+pgvector upgrades are a two-step process:
 
 1. Install the new pgvector version using this role.
 2. Manually update each database that uses the extension (run once per DB that uses pgvector):
@@ -145,10 +249,45 @@ ALTER EXTENSION vector UPDATE;
 
 ## TimescaleDB
 
-This extension will probably only run on the latest Postgresql version within the major version. For example, you need
-Postgresql 15.14 instead of 15.13.
+This extension will probably only run on the latest PostgreSQL version within the major version. For example, you need PostgreSQL 15.14 instead of 15.13.
 
 **Note**: Installing TimescaleDB requires adding it to shared_preload_libraries, which means PostgreSQL must be restarted for this change to take effect.
+
+## Example playbook
+
+```yaml
+- hosts: databases
+
+  vars:
+    postgresql_databases:
+      - name: example_db
+        owner: example_owner
+
+    postgresql_roles:
+      - name: example_owner
+      - name: example_readonly
+        database:
+          - name: example_db
+            privileges:
+              - type: database
+                privs:
+                  - CONNECT
+              - type: table
+                objs: ALL_IN_SCHEMA
+                privs:
+                  - SELECT
+
+  tasks:
+    - name: PostgreSQL
+      block:
+        - ansible.builtin.include_role:
+            name: ansible-role-postgresql
+          vars:
+            postgresql_version: "18.3"
+            postgresql_listen_address: "*"
+            postgresql_allowed_hosts_extra:
+              - 10.0.0.0/24
+```
 
 ## Testing
 
