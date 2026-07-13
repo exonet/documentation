@@ -37,6 +37,7 @@ The default value of a variable is only listed if it's not defined in `defaults/
 | nginx_default_ssl_certificate_crt                       | str  |           | Default SSL certificate path. |
 | nginx_default_ssl_certificate_key                       | str  |           | Default SSL certificate key path. |
 | nginx_deny_dotfiles                                     | bool | true      | Whether to deny access to dotfiles for a domain. |
+| nginx_dotfiles_allowed                                  | list | []        | Dot-prefixed paths to allow. |
 | nginx_deny_files                                        | bool | true      | Whether to deny access to files listed in `nginx_security_deny_files` for a domain. |
 | nginx_dhparams_size                                     | str  | 2048      | DH parameter size used to select the bundled ffdhe file. |
 | nginx_fastcgi_cache                                     | bool |           | Enable fastcgi cache for all users. |
@@ -49,7 +50,9 @@ The default value of a variable is only listed if it's not defined in `defaults/
 | nginx_fastcgi_hide_headers                              | list |           | Define the global headers which FastCGI shouldn't pass on to a client. |
 | nginx_fastcgi_ignore_headers                            | list |           | Define the global headers which caching should ignore. |
 | nginx_geoip                                             | bool |           | Enable geoip blocking globally. |
+| nginx_geoip_continents                                  | list | []        | Continent codes (AF, AN, AS, EU, NA, OC, SA) expanded into countries and unioned with `nginx_geoip_countries` for blocking. |
 | nginx_geoip_countries                                   | list |           | List of countries to deny or allow depending on the `nginx_geoip_default` variable. |
+| nginx_geoip_countries_exclude                           | list |           | Countries removed from the expanded `geoip_continents`/`geoip_countries` set; they get the `nginx_geoip_default` verdict instead. Per-user/domain overridable. |
 | nginx_geoip_database_path                               | str  |           | Path of the GeoIP database file. Note: IPv6 contains both IPv4 and IPv6 addresses and should be used for servers with IPv6 enabled. |
 | nginx_geoip_default                                     | str  |           | The default for GeoIP blocking. Allow means allow everything *except* what is in the list. Deny means deny everything *except* what is in the list. |
 | nginx_geoip_return_status                               | int  |           | The http return status code when an IP is blocked by GeoIP. |
@@ -79,6 +82,7 @@ The default value of a variable is only listed if it's not defined in `defaults/
 | nginx_http_image_filter_module                          | bool |           | Include HttpImageFilter module. |
 | nginx_keepalive_timeout                                 | str  |           | Keepalive timeout. |
 | nginx_limit_open_files                                  | int  |           | The maximum amount of open file descriptors (soft limit). |
+| nginx_limit_req_dry_run                                 | bool |           | Log rate limit hits without rejecting requests, for calibrating rates safely (per-user/domain overridable). |
 | nginx_limit_req_status                                  | str  |           | HTTP status returned for `limit_req` rejections. |
 | nginx_listen_address                                    | str  |           | The listen address that all vhosts will use. |
 | nginx_listen_port_http                                  | int  |           | The listen port that all http vhosts will use. |
@@ -121,6 +125,7 @@ The default value of a variable is only listed if it's not defined in `defaults/
 | nginx_modsecurity_tmpdir                                | str  |           | Configures the directory where temporary files will be created. |
 | nginx_modsecurity_url                                   | str  |           | The download location of the ModSecurity library. |
 | nginx_modsecurity_version                               | str  |           | The version of ModSecurity to install. |
+| nginx_modsecurity_version_major                         | str  |           | Major ModSecurity version used to select a release. |
 | nginx_monitoring_allowed_addresses_extra                | list |           | Gives the defined addresses access to the `/monitoring` location in the default vhost. |
 | nginx_openssl_checksum                                  | str  |           | The md5 checksum of the OpenSSL archive. |
 | nginx_openssl_source                                    | bool |           | Include OpenSSL from source. |
@@ -189,6 +194,13 @@ The default value of a variable is only listed if it's not defined in `defaults/
 | nginx_task_nginx                                        | bool | true      | Whether to run the main nginx configuration task set. |
 | nginx_task_nginx_modsecurity                            | bool | false     | Whether to run the ModSecurity configuration tasks. |
 | nginx_task_nginx_removed                                | bool | true      | Whether to run the nginx removal tasks. |
+| nginx_tiered_rate_limit                                 | bool |           | Enable the tiered rate limit baseline (per-user/domain overridable via `nginx_tiered_rate_limit` on that level). Requires/auto-enables GeoIP. |
+| nginx_tiered_rate_limit_burst                           | str  |           | Default burst applied to the per-tier `limit_req` lines (per-tier overridable). |
+| nginx_tiered_rate_limit_default_tier                    | str  |           | Tier applied to any country not matched by a tier's `continents`/`countries`. Must match a `name` in `nginx_tiered_rate_limit_tiers`. |
+| nginx_tiered_rate_limit_key                             | str  |           | What shares a rate-limit counter: `ip` (per client IP), `country` (all traffic from a country), `continent` (all traffic from a continent), `geo` (per configured continent/country) or `tier` (all traffic in the tier together). Per-tier overridable via `tier.key`. |
+| nginx_tiered_rate_limit_memory_size                     | str  |           | Default shared-memory size for each tier zone (per-tier overridable). |
+| nginx_tiered_rate_limit_paths                           | list |           | URI prefixes the rate limit applies to (empty list = all URIs). Per-user/domain overridable. |
+| nginx_tiered_rate_limit_tiers                           | list |           | Ordered rate-limit tiers (low to high restriction). Each has a `name`, `rate` (`false` = exempt) and optional `continents`/`countries`/`ips`/`user_agents`/`burst`/`memory_size`/`key`. |
 | nginx_timeout                                           | str  |           | The nginx timeout settings (default: 20s). |
 | nginx_upstreams                                         | list | []        | List of upstream definitions to make available per user. |
 | nginx_url                                               | str  |           | The download location of the Nginx source. |
@@ -295,9 +307,9 @@ nginx_greedy_user_agents_burst: "10" # Allow this many requests before rate limi
 
 ### GeoIP blocking via `users.yml`
 
-Warning: if you enable GeoIP blocking globally it will be active for all domains! The `nginx_variables_hash_bucket_size` is automatically increased when GeoIP blocking is active. You may need to increase `nginx_variables_hash_bucket_size` even more with a lot of domains.
+Warning: if you enable GeoIP blocking globally it will be active for all domains! The `nginx_variables_hash_bucket_size` and `nginx_variables_hash_max_size` are automatically increased when GeoIP blocking is active (every per-domain GeoIP map declares an nginx variable). You may need to increase them even more with a lot of domains.
 
-You can enable it per domain or user. Look at the example below:
+You can enable it per domain or user. Both `geoip_countries` and `geoip_continents` (continent codes AF, AN, AS, EU, NA, OC, SA) are accepted at the global, user, and domain level; continents are expanded into their countries and unioned with any explicit countries. Countries listed in `geoip_countries_exclude` are removed from that set and fall back to the `geoip_default` verdict — for example, allow all of Europe except Russia. Look at the example below:
 
 ```yaml
 users:
@@ -309,9 +321,14 @@ users:
       - name: example.nl
       - name: admin.example.nl
         geoip: true
-        geoip_default: "deny" # Set default to deny every country
-        geoip_countries:      # Except countries in this list, which will be allowed
-          - "NL"
+        geoip_default: "deny"  # Set default to deny every country
+        geoip_continents:      # Allow all of Europe...
+          - "EU"
+        geoip_countries:       # ...plus these extra countries
+          - "US"
+          - "CA"
+        geoip_countries_exclude: # ...but keep these countries (in EU) denied
+          - "RU"
       - name: forum.example.nl
         geoip: true
         geoip_default: "allow" # Set default to allow every country
@@ -362,6 +379,98 @@ nginx_rate_limit:
 ```
 
 Enable the rate limit in a location by adding a `limit_req` with the defined zone and options, e.g.: `limit_req zone=custom_rate_limit_zone burst=2 nodelay;`
+
+### Tiered rate limiting
+
+Apply a site-wide rate limit whose budget depends on how much you trust the traffic source: exempt your home market and your own apps, give trusted regions and search engine crawlers a generous budget, and progressively throttle lower-trust regions and AI crawlers. This is a baseline defence against distributed scraping and abuse, where any single IP makes few requests but the source is a useful risk signal.
+
+It is disabled by default. Enable it globally with `nginx_tiered_rate_limit` (or per user/domain by setting `nginx_tiered_rate_limit` on that level) and define an ordered list of tiers, low to high restriction. There are no tiers by default, so the applied rates are always explicit in the playbook — enabling the limit without tiers fails the preflight checks:
+
+```yaml
+nginx_tiered_rate_limit: true
+nginx_tiered_rate_limit_key: ip
+nginx_tiered_rate_limit_default_tier: standard
+nginx_tiered_rate_limit_tiers:
+  - name: unlimited
+    rate: false
+    ips: "{{ ansible_local.base.searchbots.ip_ranges_grouped }}" # Search engine crawlers
+    countries: ["NL", "BE", "DE"]
+  - name: trusted
+    rate: "30r/s"
+    burst: "120"
+    continents: ["EU", "NA"]
+  - name: standard
+    rate: "20r/s"
+    burst: "60"
+  - name: restricted
+    rate: "20r/s"
+    burst: "60"
+    user_agents: ["example-agent"]
+    ips: "{{ ansible_local.base.aibots.ip_ranges_grouped }}" # AI crawlers
+    key: tier # One shared budget for the whole tier
+  - name: untrusted
+    rate: "10r/s"
+    continents: ["AS", "AF"]
+    countries: ["RU"] # Explicit country, even though Russia is in the Europe continent list
+    key: tier # One shared budget for the whole tier
+```
+
+#### Tier assignment
+
+Every request is assigned to exactly one tier. Three signals can assign a tier, strongest wins:
+
+1. Client IP (`ips`): plain addresses or CIDR ranges, matched with the nginx `geo` module. Accepts a flat list or a mapping of `label: [ranges]` — with a mapping, each group is preceded by a `# <tier>: <label>` comment in the generated config. The strongest signal because the source IP cannot be spoofed — use this when the assignment must be tamper-proof, such as crawler allowances.
+2. User agent (`user_agents`): matched case-insensitively as whole words anywhere in the `User-Agent` header (the same matching used for `nginx_greedy_user_agents_extra`). Trivially spoofed: a forged user agent gets that tier's budget instead of its country tier, so weigh what an abuser could gain from it.
+3. Geolocation (`continents` and `countries`): the country of the client IP via the GeoIP module. The module only exposes country codes, so continents are expanded into their countries by the role (`nginx_geoip_continent_countries`); explicit `countries` win over `continents`. Countries not matched by any tier land in `nginx_tiered_rate_limit_default_tier`.
+
+In the example above this means: search engine crawlers get the `trusted` budget no matter where they crawl from, AI crawlers and the user agent `example-agent` are pinned to `restricted` even when fetching from the EU.
+
+The crawler IP lists come from the base role, which fetches the published ranges of the major search engines and AI vendors at deploy time and persists them as local facts: enable `base_facts_searchbots` and/or `base_facts_aibots` and use `ansible_local.base.<searchbots|aibots>.ip_ranges` (flat) or `.ip_ranges_grouped` (labeled per vendor, rendered with a comment per group); alternatively, supply a static list. Crawlers do not have to join a geographic tier — a dedicated tier gives them their own budget:
+
+```yaml
+  - name: aibots
+    rate: "5r/s"
+    key: tier # One shared budget for all matched crawlers
+    ips: "{{ ansible_local.base.aibots.ip_ranges_grouped }}"
+```
+
+#### Counters
+
+Each tier with a `rate` becomes a `limit_req` zone. Rates use the nginx units `r/s` or `r/m`; a rate below one request per second can only be expressed in `r/m` (for example `30r/m`), nginx does not accept fractional rates. Note that the limit applies to every request including static assets (unless scoped with paths, see below), so a single page view can be dozens of requests — size `burst` to absorb a full page load. A request is only counted by the single zone matching its tier (other tiers' keys evaluate to an empty string, which nginx does not count), so all tiers' `limit_req` lines coexist safely. Tiers with `rate: false` get no zone and are never limited. Rejections return the status from `nginx_limit_req_status` (429 by default). To calibrate rates safely on production traffic, enable `nginx_limit_req_dry_run` (per-user/domain overridable): requests are counted and over-limit hits are logged to the error log, but nothing is rejected. It applies to all `limit_req` directives in the vhost, so it also covers the greedy user agent limit and custom zones.
+
+What shares a counter is controlled by `nginx_tiered_rate_limit_key` (per-tier overridable via `key`):
+
+- `ip` (default): every client IP gets its own counter at the tier's rate (classic per-IP limiting).
+- `country`: all traffic from the same country shares one counter, so the tier's rate is a per-country budget. A tier covering a continent gives each of its countries its own counter. IPs GeoIP cannot resolve share a single fallback counter in their tier (they are routed to `nginx_tiered_rate_limit_default_tier`).
+- `continent`: all traffic from the same continent shares one counter, so the tier's rate is a per-continent budget (derived from the country code via `nginx_geoip_continent_countries`). A tier covering multiple continents gives each continent its own counter. Unresolvable IPs share a single fallback counter in their tier.
+- `geo`: one counter per configured geographic unit. Countries matched through a tier's `continents` share their continent's counter, while countries explicitly listed in any tier's `countries` get their own. Countries not matched by any tier (the default tier) share their continent's counter. Use this for tiers that combine `continents` and `countries` — for example `continents: ["AS", "AF"]` plus `countries: ["RU"]` yields separate AS, AF and RU counters.
+- `tier`: all traffic in the tier shares a single counter, so the tier's rate is the total budget for the whole tier.
+
+Note that rates mean different things per key: with `ip` the rate bounds a single client (size it to one visitor's page loads), while the shared keys cap an entire traffic class across all vhosts on the server (size them to the total expected class throughput, measured with `nginx_limit_req_dry_run`, rather than per-visitor intuition). Shared keys suit crawler classes and deliberate chokes for low-trust regions; avoid them for tiers serving regular visitors, where one busy site would exhaust the budget for all other sites.
+
+#### Limiting specific paths
+
+The limit can optionally be restricted to specific URI paths via `nginx_tiered_rate_limit_paths` (default `[]` = all URIs). Entries are case-sensitive regular expressions anchored to the start of the normalized URI, so plain prefixes work as-is. The list can be overridden per user or per domain; an explicit `[]` on a domain restores limiting on all URIs there. Paths only take effect for domains where the tiered rate limit itself is enabled (setting only paths does not enable it):
+
+```yaml
+nginx_tiered_rate_limit_paths: ["/api/"] # baseline: only limit /api/*
+users:
+  - name: example
+    domains:
+      - name: example.com
+        nginx_tiered_rate_limit_paths: ["/wp-login.php", "/xmlrpc.php"] # domain-specific paths
+      - name: example.net
+        nginx_tiered_rate_limit_paths: [] # limit all URIs for this domain
+```
+
+Requests outside the configured paths are not counted at all (the zone key evaluates to an empty string). Path selection uses the server's primary name (`$server_name`), so it applies equally to requests arriving via domain aliases.
+
+#### Notes
+
+- Enabling this automatically compiles the GeoIP module and emits `geoip_country`.
+- Zone names are `tier_<tier>` — do not reuse those names in `nginx_rate_limit`.
+- Geolocation and IP matching use the connecting IP. Behind a proxy/load balancer, set `nginx_set_real_ip_from` / `nginx_real_ip_header` so the real client is evaluated.
+- Make sure crawler user agents are not simultaneously matched by the greedy user agent list, as both limits would apply.
 
 ## Routing, caching, and logic
 
@@ -420,7 +529,7 @@ The `custom_upstream` (name as desired) application template can call `nginx_ups
 
 ### Multiple endpoints per domain
 
-Define the different nginx upstreams under `nginx_upstreams` on the user level and add `uris` under the domain to link the paths to the nginx upstream.
+Define the different nginx upstreams under `nginx_upstreams` on the user level and add `uris` under the domain to link the paths to the nginx upstream. Alternatively, define `proxy_url` directly on a `uris` item to proxy a path to a URL without a named upstream.
 
 Example:
 
@@ -443,6 +552,8 @@ users:
             restricted: true
           - path: /some/other/path
             nginx_upstream: test2
+          - path: /some/proxied/path
+            proxy_url: http://127.0.0.1:21012
 ```
 
 ## Extensions
