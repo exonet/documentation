@@ -35,6 +35,7 @@ Default values are only listed when they are not defined in `defaults/` or `vars
             group: groupname
             directory: /tmp
             application: _default
+            monitoring: true
             env_vars:
               - name: APPLICATION_ENV
                 value: production
