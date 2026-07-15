@@ -9,6 +9,7 @@ Default values are only listed when they are not defined in `defaults/` or `vars
 | Name                          | Type | Default | Description |
 | ----------------------------- | ---- | ------- | ----------- |
 | `firewall`                    | dict |         | The firewall configuration containing filter rules. |
+| `firewall_csf_csget`          | bool |         | Whether to ensure the csget cron job is present. |
 | `firewall_csf_directadmin`    | bool |         | Ensures Exonet IP whitelists for directadmin installations. |
 | `firewall_csf_faststart`      | bool |         | Whether to enable the csf faststart setting. |
 | `firewall_csf_icmp_timestamp_drop` | int |    | Whether to drop ICMP timestamp requests. |
