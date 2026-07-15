@@ -8,11 +8,11 @@ The following versions are supported by this role.
 
 | Main  | Latest | EOL |
 | ----- | ------ | --- |
-| 18    | 18.3   | No  |
-| 17    | 17.9   | No  |
-| 16    | 16.13  | No  |
-| 15    | 15.17  | No  |
-| 14    | 14.22  | No  |
+| 18    | 18.4   | No  |
+| 17    | 17.10  | No  |
+| 16    | 16.14  | No  |
+| 15    | 15.18  | No  |
+| 14    | 14.23  | No  |
 | 13    | 13.22  | Yes |
 | 12    | 12.22  | Yes |
 | 11    | 11.21  | Yes |
