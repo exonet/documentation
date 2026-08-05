@@ -10,14 +10,15 @@ The following additional variables can be passed to the role from the playbook.
 
 Default values are only listed when they are not defined in `defaults/` or `vars/`.
 
-| Name                               | Type  | Default | Description                                                        |
-| ---------------------------------- | ----- | ------- | ------------------------------------------------------------------ |
-| `supervisor_http_server_address`   | `str` |         | The address to listen on for the built-in http server.             |
-| `supervisor_logging_version_major` | `str` |         | The major version of the Supervisor logging plugin to install.     |
-| `supervisor_numprocs`              | `int` |         | The default number of processes for each supervised program.       |
-| `supervisor_role_mode`             | `str` |         | Specifies whether to run install tasks, config tasks or all tasks. |
-| `supervisor_startretries`          | `int` |         | The default number of start retries for each supervised program.   |
-| `supervisor_version_major`         | `str` |         | The major version of Supervisor to install.                        |
+| Name                               | Type           | Default | Description                                                                                                  |
+| ---------------------------------- | -------------- | ------- | ------------------------------------------------------------------------------------------------------------ |
+| `supervisor_http_server_address`   | `str`          |         | The address to listen on for the built-in http server.                                                       |
+| `supervisor_logging_version_major` | `str`          |         | The major version of the Supervisor logging plugin to install.                                               |
+| `supervisor_numprocs`              | `int`          |         | The default number of processes for each supervised program.                                                 |
+| `supervisor_role_mode`             | `str`          |         | Specifies whether to run install tasks, config tasks or all tasks.                                           |
+| `supervisor_startretries`          | `int`          |         | The default number of start retries for each supervised program.                                             |
+| `supervisor_version_major`         | `str`          |         | The major version of Supervisor to install.                                                                  |
+| `supervisor_autorestart`           | `bool` / `str` | `true`  | Specifies if supervisord should automatically restart a process if it exits when it is in the RUNNING state. |
 
 ## Example Playbook
 
@@ -35,6 +36,7 @@ Default values are only listed when they are not defined in `defaults/` or `vars
             group: groupname
             directory: /tmp
             application: _default
+            monitoring: true
             env_vars:
               - name: APPLICATION_ENV
                 value: production
