@@ -245,6 +245,97 @@ nginx_security_txt_contact:
 nginx_security_txt_languages: "nl, en"
 ```
 
+### Robots.txt
+
+Serve a managed `robots.txt` that blocks AI crawlers by default and supports per-domain sitemap URLs.
+
+Enable the feature globally:
+
+```yaml
+nginx_robots_txt: true
+```
+
+The generated file blocks the following agents with `Disallow: /` by default:
+`GPTBot`, `ClaudeBot`, `anthropic-ai`, `CCBot`, `Google-Extended`, `Bytespider`, `Applebot-Extended`.
+All other crawlers are allowed (`User-agent: *` / `Disallow:`).
+
+#### Customising blocked agents
+
+Each entry in `nginx_robots_txt_agents_list` is a dict with `name` (required), `disallow`, `allow`, and `crawl_delay`. Both `disallow` and `allow` accept a single path string or a list of paths. `allow` is written before `disallow`, and `crawl_delay` (in seconds) is written last in the output block.
+
+```yaml
+nginx_robots_txt_agents_list:
+  # Block everything (default for all AI crawlers)
+  - name: GPTBot
+    disallow: /
+
+  # Block a specific path only
+  - name: GPTBot
+    disallow: /private
+
+  # Allow a subtree, block everything else
+  - name: GPTBot
+    allow: /public
+    disallow: /
+
+  # Multiple paths
+  - name: GPTBot
+    disallow:
+      - /private
+      - /api
+    allow:
+      - /api/public
+
+  # Throttle crawl rate (Crawl-delay in seconds)
+  - name: Googlebot
+    crawl_delay: 10
+
+  # Catch-all — controls User-agent: * (allow everything by default)
+  - name: "*"
+    disallow: ""
+
+  # Catch-all — deny everything for all other bots
+  - name: "*"
+    disallow: /
+```
+
+The list can be set globally or overridden at domain level:
+
+```yaml
+users:
+  - name: example
+    domains:
+      - name: example.nl
+        nginx_robots_txt_agents_list:
+          - name: GPTBot
+            allow: /news
+            disallow: /
+```
+
+#### Sitemaps
+
+Sitemap URLs are added at domain level and are written into the domain-specific robots.txt:
+
+```yaml
+users:
+  - name: example
+    domains:
+      - name: example.nl
+        nginx_robots_txt_sitemap_urls:
+          - https://example.nl/sitemap.xml
+          - https://example.nl/sitemap-news.xml
+```
+
+Global sitemap URLs (applied to the default robots.txt) can be set with `nginx_robots_txt_sitemap_urls`.
+
+#### File resolution order
+
+For each domain, nginx's `try_files` checks in this order:
+
+1. `{{ nginx_robots_txt_base_path }}/<domain-name>.txt` — auto-generated domain file (created when any of `domain.nginx_robots_txt_sitemap_urls`, `domain.nginx_robots_txt_agents_list`, or `domain.nginx_robots_txt` is set)
+2. `nginx_robots_txt_file_playbook` — playbook-managed static file
+3. `nginx_robots_txt_file_default` — role-generated default (all domains)
+
 ### Global Headers
 
 To apply headers to all sites on the server, define them in the role variables:

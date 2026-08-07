@@ -35,6 +35,8 @@ The `services` variable must always be present as it provides the information th
             cpu_quota: 200%
             restart_sec: 5
             restart: "always"
+            standard_output: "append:/var/log/user1/test1.log"
+            standard_error: journal
             roles:
               - server01.exonetcloud.nl
             allow_sudo_extra:
