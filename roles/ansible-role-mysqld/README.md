@@ -4,20 +4,17 @@ This role will install MySQL.
 
 ## Supported versions
 
-This role supports MySQL 5.6, 5.7, 8.0 and 8.4.
+This role supports MySQL 5.6, 5.7, 8.0, 8.4 and 9.7.
 
 Latest supported versions:
 
 | Version |
 | ------- |
-| 8.4.8   |
-| 8.0.45  |
+| 9.7.2   |
+| 8.4.11  |
+| 8.0.46  |
 | 5.7.44  |
 | 5.6.51  |
-
-## Authentication
-
-Ansible [mysql_user module](https://docs.ansible.com/ansible/latest/collections/community/mysql/mysql_user_module.html#notes) currently (2024-05-21) does not support caching_sha2_password so mysql_native_password is still required to manage users with Ansible.
 
 ## Role Variables
 
@@ -116,7 +113,7 @@ for single instance also.
         name: ansible-role-mysqld
       vars:
         mysqld_role_mode: all
-        mysqld_version: "8.4.5"
+        mysqld_version: "9.7.0"
         mysqld_data_path: "/var/lib/mysql"
         mysqld_options_extra:
           group_concat_max_len: 32000
@@ -134,7 +131,7 @@ When using multi-instance it is still possible to have a single-instance entry. 
         name: ansible-role-mysqld
       vars:
         mysqld_role_mode: all
-        mysqld_version: "8.4.5"
+        mysqld_version: "9.7.0"
         mysqld_data_path: "/var/lib/mysql"
         mysqld_options_extra:
           group_concat_max_len: 32000
@@ -146,19 +143,19 @@ When using multi-instance it is still possible to have a single-instance entry. 
         name: ansible-role-mysqld
       vars:
         mysqld_role_mode: all
-        mysqld_version: "8.4.5"
+        mysqld_version: "8.0.46"
     - include_role:
         name: ansible-role-mysqld
       vars:
         mysqld_role_mode: all
-        mysqld_version: "8.0.42"
+        mysqld_version: "8.4.9"
         mysqld_instance: instance01
-        mysqld_port: 3309
+        mysqld_port: 3307
     - include_role:
         name: ansible-role-mysqld
       vars:
         mysqld_role_mode: all
-        mysqld_version: "5.7.44"
+        mysqld_version: "9.7.0"
         mysqld_instance: instance02
         mysqld_port: 3308
   tags: [mysql]
