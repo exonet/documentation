@@ -66,8 +66,9 @@ Each entry lists the variable to change, the example file and the role README th
 | Add a Redis database | `redis_databases` (`vars/redis.yml`) | <https://raw.githubusercontent.com/exonet/documentation/master/vars/redis.yml> | redis |
 | Add or change a cron job | `crons` (`vars/crons.yml`) | <https://raw.githubusercontent.com/exonet/documentation/master/vars/crons.yml> | crons |
 | Add a DKIM domain | `base_dkim_domains` (`vars/dkim.yml`) | <https://raw.githubusercontent.com/exonet/documentation/master/vars/dkim.yml> | |
-| Add a supervisor program or systemd unit | ask Exonet, see the role README | | supervisor, systemd |
-| Deployment configuration | ask Exonet, see the role README | | deployment |
+| Add or change a Supervisor program for a user | `processes` under the user in `users` (`vars/users.yml`) | <https://raw.githubusercontent.com/exonet/documentation/master/vars/users.yml> | supervisor |
+| Add or change a systemd service for a user | `services` under the user in `users` (`vars/users.yml`) | <https://raw.githubusercontent.com/exonet/documentation/master/vars/users.yml> | systemd |
+| Add or change a Docker container, its image, ports, volumes or environment for a user | `container_services`, `container_volumes`, `container_networks`, `container_secrets` under the user in `users` (`vars/users.yml`) | <https://raw.githubusercontent.com/exonet/documentation/master/vars/users.yml> | deployment |
 
 A user, domain, database or key is removed by adding `removed: true` to the entry, not by deleting it.
 
