@@ -70,7 +70,7 @@ Each entry lists the variable to change, the example file and the role README th
 | Add or change a systemd service for a user | `services` under the user in `users` (`vars/users.yml`) | <https://raw.githubusercontent.com/exonet/documentation/master/playbooks/vars/users.yml> | systemd |
 | Add or change a Docker container, its image, ports, volumes or environment for a user | `container_services`, `container_volumes`, `container_networks`, `container_secrets` under the user in `users` (`vars/users.yml`) | <https://raw.githubusercontent.com/exonet/documentation/master/playbooks/vars/users.yml> | deployment |
 
-A user, domain, database or key is removed by adding `removed: true` to the entry, not by deleting it.
+A user, database or key is removed by adding `removed: true` to the entry, not by deleting it.
 
 ## Roles
 
