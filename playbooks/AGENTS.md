@@ -4,10 +4,19 @@ Instructions for AI agents that change an Exonet `ansible-playbooks-*` repositor
 
 ## Overview
 
+- These instructions are written for customers and describe what a customer can change. If you work for Exonet, read [For Exonet engineers](#for-exonet-engineers) as well.
 - Each `ansible-playbooks-<customer>` repository contains the Ansible playbooks Exonet uses to manage the servers of one customer.
 - Customers have read access and propose changes through a pull request from a fork. Exonet reviews the pull request, merges it and runs the playbook on the servers. Nothing is deployed until Exonet does this.
-- You cannot run the playbook and you cannot reach the servers. Your deliverable is a small, correct pull request that Exonet can approve as is.
+- As a customer you cannot run the playbook and you cannot reach the servers. Your deliverable is a small, correct pull request that Exonet can approve as is.
 - Changes that do not follow the conventions in this repository are not approved.
+
+## For Exonet engineers
+
+The documentation in this directory is the subset that is relevant for customers. Exonet engineers have more context and more freedom, and should use both.
+
+- The full documentation of every role is in the private Exonet role repositories: the `README.md`, `defaults/main.yml` and `vars/` of the role. When these repositories are checked out on this machine or reachable through the GitHub CLI, read them instead of the summaries in this directory. Variables that are not documented here can still be valid.
+- The scope limits for customers do not apply: you can add, remove and reorder roles, change versions and use roles that are not documented here, as long as the change follows the conventions.
+- You can run a playbook locally with Vagrant using the `Vagrantfile` and `vagrantconf.yml` in the playbook directory. Describe in the pull request what you ran.
 
 ## Read before you start
 
@@ -32,10 +41,12 @@ The layout differs per repository. Look at the repository before you change anyt
 
 ## Rules for changes
 
+The conventions apply to every change. The first three rules limit the scope of customer changes; see [For Exonet engineers](#for-exonet-engineers) for how they apply to Exonet engineers.
+
 - Only use role variables that are documented in the README of that role (see [Roles](#roles)). Do not invent or guess variables. When a role is not documented here, describe what you need in the pull request instead of guessing.
 - Do not add roles to a playbook, remove roles, or change the order of roles. Ask Exonet in the pull request when a change needs a role that is not in the playbook yet.
+- Do not change version variables, for example `php_version_major`, unless the change is explicitly about upgrading that software. Prefer a major version over a fully pinned version.
 - Do not remove entries for users or databases. Mark them with `removed: true` as described in the conventions.
-- Do not change version variables, for example `php_version`, unless the change is explicitly about upgrading that software. Prefer a major version over a fully pinned version.
 - Never add secrets: passwords, API keys, private keys, tokens or certificates. Ask Exonet how a secret must be provided.
 - Copy the structure of existing entries in the same file. Existing entries show which keys are in use in this repository.
 - Do not reformat, reorder or "clean up" lines you do not need to change. The diff must contain only the intended change.
