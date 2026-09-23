@@ -130,6 +130,30 @@ opcache.revalidate_freq = 0
 opcache.revalidate_path = 1
 ```
 
+### File based cache
+
+OPcache can store its compiled opcodes on disk in addition to (or instead of) shared memory. This is useful when the shared memory cache is repeatedly lost, for example when PHP-FPM is restarted often or when `pm.max_requests` recycles workers frequently.
+
+The file cache is disabled by default. Set `php_opcache_file_cache` to a directory to enable it. The role then creates that directory and adds the file cache directives to the `extensions.ini`:
+
+```yaml
+php_opcache_file_cache: /var/cache/php-opcache
+php_opcache_file_cache_only: 1
+php_opcache_file_cache_consistency_checks: 0
+```
+
+Which results in:
+
+```ini
+opcache.file_cache = /var/cache/php-opcache
+opcache.file_cache_consistency_checks = 0
+opcache.file_cache_only = 1
+```
+
+Note that `php_opcache_file_cache_only` disables the shared memory cache, so opcodes are read from disk on every request. Only use it when shared memory is not available or not effective. Disabling `php_opcache_file_cache_consistency_checks` skips the checksum validation of the cached files, which is faster but assumes the cache directory is not tampered with.
+
+The cache directory is created world writable (mode `1777`, like `/tmp`) because every PHP-FPM pool runs as its own user. Do not enable the file cache with a shared directory on servers with untrusted users; configure a per pool directory through `php_admin_values` instead.
+
 ## Example Playbook
 
 ```yaml

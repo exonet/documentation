@@ -16,6 +16,7 @@ Default values are only listed when they are not defined in `defaults/` or `vars
 | `deployment_docker_compose_log_output`            | bool |         | Whether to show log output of the deployment. |
 | `deployment_docker_compose_profiles`              | list |         | Docker Compose profile names to execute. |
 | `deployment_docker_compose_pull`                  | str  |         | Method to use for pulling the Docker image. |
+| `deployment_docker_compose_registry_config_path`  | str  |         | Path to a Docker config directory (`DOCKER_CONFIG`) holding the `config.json` to authenticate the pull; use when this host must pull from the same registry with more than one account. When unset, Docker uses its own default config directory. |
 | `deployment_docker_compose_registry_owner`        | str  |         | Registry owner to fetch images from. |
 | `deployment_docker_compose_registry_owner_enabled` | bool |        | Whether to set the registry owner in the image URL. |
 | `deployment_docker_compose_registry_url`          | str  |         | Registry URL to fetch images from. |
@@ -32,6 +33,25 @@ When using rolling deployments you must set variables in this role and other rol
 In this role you must set `deployment_docker_compose_remove_orphans` to `false`. An orphan is a container that still exists but is no longer referenced by the docker-compose file. This will happen with rolling upgrades because the name of the container will change. We don't want Docker Compose to clean these up automatically because the old container might still be needed while the new one is starting up. This role will do the cleanup once the rolling deployment is finished.
 
 In the firewall role you must set `firewall_csf_faststart` to `false`. CSF uses faststart by default, which means that on a restart of the server the existing firewall rules will be saved and used again on boot. When using rolling deployments the port of the container is dynamic and can change on a restart of the server. In that case we don't want the previous firewall rules (as those contain the old ports), but new rules need to be generated as defined in the csfpost.sh script. For this reason faststart should be disabled.
+
+### Multiple registry credentials on one host
+
+When a host must pull from the same registry with more than one account, keep each account in its own Docker config directory and point the affected deployment at it with `deployment_docker_compose_registry_config_path`:
+
+```shell
+docker --config /root/.docker-exonet login registry.exonet.nl
+```
+
+```yaml
+- ansible.builtin.include_role:
+    name: ansible-role-deployment
+  vars:
+    deployment_docker_compose_registry_config_path: /root/.docker-exonet
+```
+
+The path is passed to Docker Compose as `DOCKER_CONFIG`, so the directory must exist on the host and hold a `config.json` with a valid login for the registry.
+
+Leave the variable unset for deployments that only require one login. In that case `DOCKER_CONFIG` is not passed at all, so Docker uses its default config directory (`~/.docker` of the user running the deployment).
 
 ### Per-user variables
 
