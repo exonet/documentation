@@ -33,6 +33,7 @@ Variables with a default value defined in `defaults/` or `vars/` have their Defa
 | `postgresql_data_dir`                      | str    |         | The directory used for PostgreSQL data storage. |
 | `postgresql_databases`                     | list   |         | A list of databases to create. Each entry is a dict with at least `name` and `owner`. See `postgresql_databases` below for the full schema. |
 | `postgresql_debug`                         | bool   |         | Enable verbose debug output for role internals (role/owner/password lookups). |
+| `postgresql_login_unix_socket`             | str    |         | Unix socket path used by Ansible's PostgreSQL modules for local administrative connections. |
 | `postgresql_listen_address`                | str    |         | Define which IP address PostgreSQL should listen on. |
 | `postgresql_listen_port`                   | int    |         | Define which port PostgreSQL should listen on. |
 | `postgresql_log_directory`                 | str    |         | Specify the logging collector directory. |
