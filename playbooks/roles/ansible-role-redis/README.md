@@ -81,6 +81,10 @@ The following additional variables can be passed to the Redis instance config fr
 | --------------------- | ----------- |
 | `redis_force_restart` | Restart Redis services only for detected configuration or upgrade changes, even when `redis_restart_on_config` or `redis_restart_on_upgrade` are `false`. |
 
+## Modules
+
+Redis 8.10 and newer ship RedisBloom, RediSearch, RedisJSON and RedisTimeSeries in the source tarball, and their build needs a toolchain (CMake, Rust) this role does not install. The role therefore builds and installs the Redis core only, as it did for every earlier version; the bundled modules are not built and not loaded.
+
 ## Docker image
 
 This role also contains a docker image that can be used for containers. The data in the container is non-persistent, all data is removed when the container is rebuild. Do NOT use this in production!
