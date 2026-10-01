@@ -80,6 +80,7 @@ Each entry lists the variable to change, the example file and the role README th
 | Add or change a Supervisor program for a user | `processes` under the user in `users` (`vars/users.yml`) | <https://raw.githubusercontent.com/exonet/documentation/master/playbooks/vars/users.yml> | supervisor |
 | Add or change a systemd service for a user | `services` under the user in `users` (`vars/users.yml`) | <https://raw.githubusercontent.com/exonet/documentation/master/playbooks/vars/users.yml> | systemd |
 | Add or change a Docker container, its image, ports, volumes or environment for a user | `container_services`, `container_volumes`, `container_networks`, `container_secrets` under the user in `users` (`vars/users.yml`) | <https://raw.githubusercontent.com/exonet/documentation/master/playbooks/vars/users.yml> | deployment |
+| Protect a domain against bots with BotStopper, or change its bot policy | `managed_challenge`, `policy` under the user or domain in `users` (`vars/users.yml`) | <https://raw.githubusercontent.com/exonet/documentation/master/playbooks/vars/users.yml> | anubis |
 
 A user, database or key is removed by adding `removed: true` to the entry, not by deleting it.
 
@@ -89,6 +90,7 @@ The README of a role lists every supported variable with its type, default and d
 
 | Role | Raw URL |
 | ---- | ------- |
+| anubis | <https://raw.githubusercontent.com/exonet/documentation/master/playbooks/roles/ansible-role-anubis/README.md> |
 | crons | <https://raw.githubusercontent.com/exonet/documentation/master/playbooks/roles/ansible-role-crons/README.md> |
 | deployment | <https://raw.githubusercontent.com/exonet/documentation/master/playbooks/roles/ansible-role-deployment/README.md> |
 | firewall | <https://raw.githubusercontent.com/exonet/documentation/master/playbooks/roles/ansible-role-firewall/README.md> |
