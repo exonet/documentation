@@ -8,11 +8,11 @@ The following versions are supported by this role.
 
 | Main  | Latest | EOL |
 | ----- | ------ | --- |
-| 18    | 18.4   | No  |
-| 17    | 17.10  | No  |
-| 16    | 16.14  | No  |
-| 15    | 15.18  | No  |
-| 14    | 14.23  | No  |
+| 18    | 18.6   | No  |
+| 17    | 17.11  | No  |
+| 16    | 16.15  | No  |
+| 15    | 15.19  | No  |
+| 14    | 14.24  | No  |
 | 13    | 13.22  | Yes |
 | 12    | 12.22  | Yes |
 | 11    | 11.21  | Yes |
@@ -33,7 +33,6 @@ Variables with a default value defined in `defaults/` or `vars/` have their Defa
 | `postgresql_data_dir`                      | str    |         | The directory used for PostgreSQL data storage. |
 | `postgresql_databases`                     | list   |         | A list of databases to create. Each entry is a dict with at least `name` and `owner`. See `postgresql_databases` below for the full schema. |
 | `postgresql_debug`                         | bool   |         | Enable verbose debug output for role internals (role/owner/password lookups). |
-| `postgresql_login_unix_socket`             | str    |         | Unix socket path used by Ansible's PostgreSQL modules for local administrative connections. |
 | `postgresql_listen_address`                | str    |         | Define which IP address PostgreSQL should listen on. |
 | `postgresql_listen_port`                   | int    |         | Define which port PostgreSQL should listen on. |
 | `postgresql_log_directory`                 | str    |         | Specify the logging collector directory. |
@@ -52,6 +51,8 @@ Variables with a default value defined in `defaults/` or `vars/` have their Defa
 | `postgresql_pg_hba_local_auth_method`      | str    |         | Set the authentication method for local connections in `pg_hba`. |
 | `postgresql_pg_repack`                     | bool   |         | Whether to install the pg_repack extension. |
 | `postgresql_pg_repack_version`             | str    |         | The version of pg_repack to install. |
+| `postgresql_pg_textsearch`                 | bool   |         | Whether to install the pg_textsearch extension. |
+| `postgresql_pg_textsearch_version`         | str    |         | The version of pg_textsearch to install. |
 | `postgresql_pgbackrest`                    | bool   |         | Whether to install and configure the pgBackRest utility. |
 | `postgresql_pgbackrest_pgs`                | list   |         | A list of PostgreSQL instances to configure for pgBackRest. |
 | `postgresql_pgbackrest_repos`              | list   |         | A list of pgBackRest repository configurations. |
@@ -231,6 +232,25 @@ postgresql_pgbackrest_repos:
     path: /pgbackrest
 ```
 
+## pg_textsearch
+
+**Note**: Installing pg_textsearch requires adding it to shared_preload_libraries, which means PostgreSQL must be restarted before the extension can be added/enabled.
+
+Enable the extension per database (run once in each DB that should use it):
+
+```sql
+CREATE EXTENSION pg_textsearch;
+```
+
+pg_textsearch upgrades are a two-step process:
+
+1. Install the new pg_textsearch version using this role.
+2. Manually update each database that uses the extension (run once per DB that uses pg_textsearch):
+
+```sql
+ALTER EXTENSION pg_textsearch UPDATE;
+```
+
 ## pgvector
 
 Enable the extension per database (run once in each DB that should use it):
@@ -251,6 +271,8 @@ ALTER EXTENSION vector UPDATE;
 ## TimescaleDB
 
 This extension will probably only run on the latest PostgreSQL version within the major version. For example, you need PostgreSQL 15.14 instead of 15.13.
+
+Package filenames of TimescaleDB versions after 2.23.0 contain a build number per PostgreSQL major version. These build numbers are listed in `postgresql_timescaledb_plugin_version_download_map` in `vars/main.yml`, so a new TimescaleDB version must be added there before it can be installed. The build number is also the minimum PostgreSQL version the package requires (for example, `1806` requires PostgreSQL 18.6), and the role fails early when `postgresql_version` is lower.
 
 **Note**: Installing TimescaleDB requires adding it to shared_preload_libraries, which means PostgreSQL must be restarted for this change to take effect.
 
