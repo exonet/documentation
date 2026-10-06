@@ -18,6 +18,7 @@ The following optional variables can be passed to the role from the playbook.
 | Name                     | Type | Default | Description |
 | ------------------------ | ---- | ------- | ----------- |
 | `crons`                  | list |         | Cron configuration for all managed users. |
+| `crons_flock_close`      | bool |         | Whether to add the `-o` flag to `flock`, closing the lock file descriptor before the job runs. |
 | `crons_random_delay`     | bool |         | Whether to add a random delay between 0 and `crons_random_delay_max` seconds before the job runs. |
 | `crons_random_delay_max` | int  |         | Maximum number of seconds for the delay. |
 | `crons_user_logs`        | bool |         | Whether to activate cron logs per user (`users` variable must be present). |
@@ -31,6 +32,15 @@ If a field is not provided, it defaults to `*` (every value) in the cron express
 
 Tasks can be temporarily disabled without being removed from the playbook by setting `disabled: true`
 This makes it possible to toggle jobs on and off while keeping the configuration.
+
+## Flock
+
+Jobs are wrapped in `flock` by default, so a run is skipped while the previous one still holds the lock (`/tmp/cron_<user>_<task_name>.lock`).
+
+Jobs like `artisan schedule:run` spawn child processes that inherit the lock and keep holding it after the job itself finishes.
+Multiple customers work around this with `flock: false`, which drops locking entirely and defeats its purpose.
+Use `flock_close: true` instead: it adds the `-o` flag, closing the lock file descriptor before the job runs.
+Set `crons_flock_close: true` to enable it for all tasks.
 
 ## Random delay
 
@@ -85,6 +95,7 @@ If unset, mail delivery is disabled.
             weekday: 1
             job: "/usr/local/bin/php /tmp/example.php"
             disabled: true
+            flock_close: true
             random_delay: true
             log: true
             log_file: /var/log/example_cron.log
@@ -100,6 +111,7 @@ If unset, mail delivery is disabled.
         - ansible.builtin.include_role:
             name: ansible-role-crons
           vars:
+            crons_flock_close: true
             crons_random_delay: true
             crons_random_delay_max: 5
             crons_user_logs: true
