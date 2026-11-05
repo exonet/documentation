@@ -11,6 +11,7 @@ The `users` variable should be present when using this role for configuration as
 | Name                                                      | Type | Default | Description |
 | --------------------------------------------------------- | ---- | ------- | ----------- |
 | `php_cachetool`                                           | bool |         | Whether to install CacheTool for PHP. |
+| `php_experimental_patches`                                | bool |         | Whether to also apply the experimental patches in `files/patches/experimental/` to the PHP source. |
 | `php_extension_*`                                         | bool |         | Whether to install this PHP extension (see matrix below for a list). |
 | `php_extension_*_version_major`                           | str  |         | The major version of the extension to install (see matrix below for compatibility). |
 | `php_extension_newrelic_enabled`                          | bool |         | Whether to enable the New Relic extension after installation. |
@@ -82,10 +83,15 @@ can't be set to "undefined", the variables that should be "undefined" are listed
 | ssh2       | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
 | swoole     | >=6.2.0   | >=6.0.0   | Yes       | Yes       | Yes       | Yes       | Yes       |
 | uuid       | Yes       | Yes       | Yes       | Yes       | Yes       | >=1.2.0   | Yes       |
+| xberg      | Yes       | Yes       | Yes       | No        | No        | No        | No        |
 | xdebug     | Yes       | >=3.4.0   | >=3.3.0   | >=3.2.0   | >=3.1.0   | >=3.0.0   | Yes       |
 | xlswriter  | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
 | yaml       | Yes       | Yes       | Yes       | >=2.2.3   | >=2.2.2   | >=2.2.0   | Yes       |
 | zmq        | No        | Yes       | Yes       | Yes       | Yes       | Yes       | Yes       |
+
+## Xberg extension on Debian 11
+
+The Xberg extension is only installed on Debian 12 and higher. On Debian 11, `php_extension_xberg` is ignored because the prebuilt extension requires a newer `libheif` than the 1.11 release that Debian 11 provides.
 
 ## Compiling PHP with SNMP on Debian 11
 
@@ -94,6 +100,19 @@ Compiling PHP with `php_snmp` also installs necessary Debian packages. This work
 ## Ioncube loader
 
 This extension will not be automatically loaded because it must be loaded at a very specific place in the `php.ini` file (first extension to load). Please modify the `php.ini` to activate the Ioncube loader.
+
+## Security patches for end-of-life PHP versions
+
+PHP versions that no longer receive upstream releases get security fixes through patches in
+`files/patches/security/`. A patch is applied to the source when its filename contains the PHP major
+version being built, and a newly applied patch triggers a recompile and restart of PHP-FPM. See
+`files/patches/security/README.md` for the naming convention and rules.
+
+Patches that are not ready for every host, for example a backport that still needs validation, go in
+`files/patches/experimental/` and are only applied when `php_experimental_patches` is `true`. They
+follow the same naming convention and are applied after the security patches. An applied experimental
+patch is reverted (with a recompile) when it is removed, changed or disabled, so an official patch
+for the same issue applies cleanly afterwards. See `files/patches/experimental/README.md`.
 
 ## Memcache for PHP 8+
 
