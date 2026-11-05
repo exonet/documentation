@@ -109,6 +109,7 @@ Default values are only listed when they are not defined in `defaults/` or `vars
 | `nginx_modsecurity_block_missing_user_agent`              | bool |            | Whether ModSecurity blocks requests with an empty or blank user agent. |
 | `nginx_modsecurity_crs_url`                               | str  |            | The download location of the ModSecurity Core Rule Set. |
 | `nginx_modsecurity_crs_version`                           | str  |            | The version of the ModSecurity Core Rule Set to install. |
+| `nginx_modsecurity_crs_version_major`                     | str  |            | The ModSecurity Core Rule Set major version to use. |
 | `nginx_modsecurity_custom_rules`                          | list |            | Custom `SecRule` rules for ModSecurity. |
 | `nginx_modsecurity_datadir`                               | str  |            | The directory where ModSecurity stores persistent data. |
 | `nginx_modsecurity_module_url`                            | str  |            | The download location of the ModSecurity module source. |
@@ -172,6 +173,7 @@ Default values are only listed when they are not defined in `defaults/` or `vars
 | `nginx_require_ssl`                                       | bool |            | Whether the preflight checks fail when a domain has no SSL certificate. |
 | `nginx_restart_graceful`                                  | bool |            | Whether to restart nginx gracefully without interruption. |
 | `nginx_restricted`                                        | bool |            | The default value of `domain.restricted`. |
+| `nginx_restricted_firewall_addresses`                     | bool |            | Whether restricted locations also allow the source addresses of the firewall allow rules. |
 | `nginx_robots_txt`                                        | bool |            | Whether nginx serves `/robots.txt`, overridable per user and domain. |
 | `nginx_robots_txt_agents_list`                            | list |            | The user agent rules of the generated robots.txt, blocking AI crawlers by default. |
 | `nginx_robots_txt_base_path`                              | str  |            | The directory of the generated robots.txt files. |
@@ -233,9 +235,19 @@ Nginx releases are organized into two tiers:
 
 When a new Nginx release is available, it is integrated and tested in the role. After validation, it is promoted from `latest` to `stable`.
 
+### HTTP Configuration Fragments
+
+Prefer the role's configuration variables where available. For HTTP-level settings they do not cover, place fragments in `/usr/local/nginx/conf/conf.d/*.conf`. The directory is created during installation and included before the virtual hosts.
+
+Child container images can use the same directory without replacing `nginx.conf`:
+
+```dockerfile
+COPY mime-types.conf /usr/local/nginx/conf/conf.d/mime-types.conf
+```
+
 ### MIME Types
 
-Every Nginx installation includes a default [mime.types](https://github.com/nginx/nginx/blob/0427f5335f7abfbb733a72d6bf3561508f5d8a88/conf/mime.types) file. To add missing types/extensions:
+Nginx ships a default [mime.types](https://github.com/nginx/nginx/blob/master/conf/mime.types) file. In `config`/`all` mode, add mappings with `nginx_mime_types_extra`. Install-only container builds use a `conf.d` fragment instead.
 
 ```yaml
 nginx_mime_types_extra:

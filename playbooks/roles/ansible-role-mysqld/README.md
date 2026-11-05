@@ -10,8 +10,8 @@ Latest supported versions:
 
 | Version |
 | ------- |
-| 9.7.2   |
-| 8.4.11  |
+| 9.7.4   |
+| 8.4.13  |
 | 8.0.46  |
 | 5.7.44  |
 | 5.6.51  |
@@ -47,6 +47,8 @@ Default values are only listed when they are not defined in `defaults/` or `vars
 | `mysqld_instance`                      | str  |                | Instance name. When provided, the role will install a separate instance of MySQL. Paths will append the instance name. |
 | `mysqld_interactive_timeout`           | int  |                | Set interactive_timeout in seconds. |
 | `mysqld_jdbc_connector`               | bool |                | Whether to install the JDBC connector. |
+| `mysqld_jemalloc`                      | bool |                | Whether to preload jemalloc for the MySQL service. A restart of MySQL is required to activate or deactivate it. |
+| `mysqld_jemalloc_library_path`         | str  |                | Path to the jemalloc library that is preloaded when `mysqld_jemalloc` is enabled. |
 | `mysqld_join_buffer_size`              | str  |                | Set join_buffer_size. |
 | `mysqld_local_infile`                  | int  |                | Set local-infile. Disabled by default for security reasons. |
 | `mysqld_log_bin_trust_function_creators` | int |               | Enable (1) or disable (0) log_bin_trust_function_creators. |
@@ -91,6 +93,16 @@ However when an instance name is given with `mysqld_instance`, the `mysqld_data_
 `/var/lib/mysql-[instance name]` which conforms to the new `/var/lib/` location for the mysqld data directory.
 When `/home/mysql` is not used anymore the default for `mysqld_data_path` can be changed to `/var/lib/mysql`
 for single instance also.
+
+## Using jemalloc
+
+Setting `mysqld_jemalloc` to `true` installs the `libjemalloc2` package and adds a systemd override for the MySQL
+service that preloads jemalloc through `LD_PRELOAD`. This replaces the default glibc memory allocator, which can
+reduce memory fragmentation on servers with many connections.
+
+On an existing installation MySQL is not restarted automatically when the override is added, changed or
+removed. Until MySQL is restarted manually, the allocator stays as it is and the MOTD announces that a restart
+is required. A fresh installation starts with the override already in place.
 
 ## How to reinitializate MySQL when changes are made to mysqld_lower_case_table_names
 
